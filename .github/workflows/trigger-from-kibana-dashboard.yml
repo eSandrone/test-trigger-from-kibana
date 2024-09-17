@@ -1,0 +1,22 @@
+name: Trigger from Kibana dashboard
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ test-from-pqd ]
+
+jobs:
+  trigger-from-kibana-dashboard:
+    name: Verify trigger from Kibana dashboard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - name: Run a multi-line script
+        run: |
+          echo ${{ github.event.client_payload.test_type }}
+          echo ${{ github.event.client_payload.area }}
