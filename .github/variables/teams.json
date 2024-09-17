@@ -1,0 +1,333 @@
+{
+    "Kobra": {
+      "area": "ca",
+      "component": "ka",
+      "supported-test-suites": {
+        "functional": {
+          "multi-image": "false",
+          "applications": {
+            "key-pool-qa": {
+              "url": "sar/ca-service-key-pool",
+              "environment": "QA",
+              "command": "./gradlew e2eApiTest",
+              "runner": "ubuntu-latest",
+              "framework": "gradle",
+              "java-version": "17",
+              "secrets": "SECRETS",
+              "report-position": "e2e-tests-api/build/reports/cucumber-report.json",
+              "version-id": "561561"
+            }
+          }
+        }
+      }
+    },
+    "Zulu": {
+      "area": "ca",
+      "component": "ca",
+      "supported-test-suites": {
+        "functional": {
+          "multi-image": "false",
+          "applications": {
+            "picture-panel-search-service": {
+              "url": "sar/ca-picture-panel-search-service",
+              "environment": "QA",
+              "command": "cucumber",
+              "runner": "ubuntu-latest",
+              "java-version": "17",
+              "framework": "gradle",
+              "report-position": "integration-tests/build/reports",
+              "version-id": "684321"
+            }
+          }
+        },
+        "ui": {
+          "multi-image": "false",
+          "applications": {
+            "picture-panel-search-ui": {
+              "url": "sar/ca-picture-panel-search-ui-tests",
+              "environment": "QA",
+              "command": "None",
+              "runner": "ubuntu-latest",
+              "java-version": "17",
+              "framework": "cypress",
+              "node-version": "20",
+              "need-chrome": "true",
+              "username-and-password-id": "PICTURE-PANEL-SEARCH-",
+              "report-position": "ca-picture-panel-search-ui-tests/logs/out.txt",
+              "container": "cypress/browsers:node12.18.3-chrome87-ff82",
+              "version-id": ""
+            }
+          }
+        }
+      }
+    },
+    "DevNull": {
+      "area": "lm",
+      "component": "pla",
+      "supported-test-suites": {
+        "smoke": {
+          "multi-image": "true",
+          "applications": {
+            "pla": {
+              "url": "sar/pla-ui-tests",
+              "environment": "QA",
+              "requirements": "devnull.sh",
+              "command": "npx cucumber-js --world-parameters '{'environmentUrl':'www.l.com','headless':'true'}'",
+              "runner": "ubuntu-latest",
+              "framework": "playwright",
+              "report-position": "build/reports/cucumber.json",
+              "node-version": "20",
+              "images": {
+                "pla-backend-vehicle": {
+                  "url": "https://a.d.com/sar/pla-backend-vehicle",
+                  "version-id": "56453"
+                },
+                "pla-frontend-vehicle": {
+                  "url": "https://a.d.com/sar/pla-frontend-vehicle",
+                  "version-id": "38964537532501"
+                },
+                "pla-backend-type-code": {
+                  "url": "https://a.d.com/sar/pla-backend-type-code",
+                  "version-id": "389678642372120"
+                },
+                "pla-frontend-type-code": {
+                  "url": "https://a.d.com/sar/pla-frontend-typecode",
+                  "version-id": "45374341"
+                },
+                "pla-frontend-feedback": {
+                  "url": "https://a.d.com/sar/pla-frontend-feedback",
+                  "version-id": "76453"
+                },
+                "pla-backend-service-case": {
+                  "url": "https://a.d.com/sar/pla-backend-service-case",
+                  "version-id": "763423"
+                },
+                "pla-frontend-service-case": {
+                  "url": "https://a.d.com/sar/pla-frontend-service-case",
+                  "version-id": "763453"
+                },
+                "pla-backend-user": {
+                  "url": "https://a.d.com/sar/pla-backend-user",
+                  "version-id": "786543"
+                },
+                "pla-backend-feedback": {
+                  "url": "https://a.d.com/sar/pla-backend-feedback",
+                  "version-id": "38974637456671993"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Enzian": {
+      "area": "re",
+      "component": "pla",
+      "supported-test-suites": {
+        "e2e": {
+          "multi-image": "true",
+          "applications": {
+            "pla": {
+              "url": "sar/re-pla-services-e2e-testautomation",
+              "environment": "QA",
+              "command": "./gradlew clean test -DcucumberFilterTags=@pla -DenvironmentUrl='https://pla-qa.l.com'",
+              "runner": "ubuntu-latest",
+              "framework": "cucumber",
+              "report-position": "build/reports/cucumber.json",
+              "java-version": "17",
+              "images": {
+                "comprehensive-text-service": { 
+                  "url" : "https://a.d.com/sar/re-comprehensive-text-service",
+                  "version-id" : "4534343"
+                },
+                "print-data-configurator": {
+                  "url": "https://a.d.com/sar/re-print-data-configurator",
+                   "version-id":"545645345379918"
+                },
+                "print-data-configurator-ui": {
+                  "url": "https://a.d.com/sar/re-print-data-configurator-ui",
+                  "version-id": "42423543"
+                },
+                "print-data-provider": {
+                  "url": "https://a.d.com/sar/re-print-data-provider",
+                  "version-id": "5456830488"
+                },
+                "print-data-provider-ui": {
+                  "url": "https://a.d.com/sar/re-print-data-provider-ui",
+                  "version-id": "756753753"
+                },
+                "service-contracts": {
+                  "url": "https://a.d.com/sar/re-service-contracts",
+                  "version-id": "7375375652"
+                },
+                "service-contracts-ui": {
+                  "url": "https://a.d.com/sar/re-service-contracts-ui",
+                  "version-id": "75342"
+                },
+                "service-ride-calculation": {
+                  "url": "https://a.d.com/sar/re-service-ride-calculation",
+                  "version-id": "753453243"
+                },
+                "service-ride-calculation-ui": {
+                  "url": "https://a.d.com/sar/re-service-ride-calculation-ui",
+                  "version-id": "7534343"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Kranzhorn_ThisIsFine": {
+      "area": "lm",
+      "component": "pla",
+      "supported-test-suites": {
+        "e2e": {
+          "multi-image": "true",
+          "applications": {
+            "pla": {
+              "url": "sar/lm-leads-smoke-tests",
+              "environment": "QA",
+              "command": "java -Xmx3072m -DpropertySource=env -Dexecutiontype=REST -Denv='QA' -jar smoke-tests-rest-tests.jar --plugin 'pretty' --plugin 'json:target/cucumber-report.json' --plugin 'com.bmw.ispi.leads.smoke.tests.rest.tests.RestTestLifecycle' --glue 'com.bmw.ispi.leads.smoke.tests.rest.tests.steps' --tags 'not @draft and @rest' 'src/main/resources'",
+              "runner": "ubuntu-latest",
+              "framework": "gradle",
+              "report-position": "smoke-tests-rest-tests/target/cucumber-report.json",
+              "java-version": "17",
+              "images": {
+                "leads-cockpit": {
+                  "url": "https://a.d.com/sar/lm-leads-cockpit",
+                  "version-id": "453543453"
+                },
+                "leads-service-partner": {
+                  "url": "https://a.d.com/sar/lm-leads-service-partner",
+                  "version-id": "4139994237453327"
+                },
+                "leads-customer": {
+                  "url": "https://a.d.com/sar/lm-leads-customer",
+                  "version-id": "375343"
+                },
+                "leads-config": {
+                  "url": "https://a.d.com/sar/lm-leads-config",
+                  "version-id": "4563453"
+                },
+                "leads-appointment": {
+                  "url": "https://a.d.com/sar/lm-leads-appointment",
+                  "version-id": "45345"
+                },
+                "leads-local-packages": {
+                  "url": "https://a.d.com/sar/lm-leads-local-packages",
+                  "version-id": "793453"
+                },
+                "analytics-ingester-rest": {
+                  "url": "https://a.d.com/sar/lm-analytics-ingester-rest",
+                  "version-id": "342373"
+                },
+                "analytics-digester-statistics": {
+                  "url": "https://a.d.com/sar/lm-analytics-digester-statistics",
+                  "version-id": "434233"
+                }
+              }
+            }
+          }
+        },
+        "ui": {
+          "multi-image": "true",
+          "applications": {
+            "pla": {
+              "url": "sar/lm-leads-smoke-tests",
+              "environment": "QA",
+              "command": "java -DpropertySource=env -Dexecutiontype=UI -Denv='QA' -jar smoke-tests-ui-tests.jar --plugin 'pretty' --plugin 'json:target/cucumber-report.json' --plugin 'com.bmw.ispi.leads.smoke.tests.ui.tests.UITestLifecycle' --glue 'com.bmw.ispi.leads.smoke.tests.ui.tests.steps' --tags 'not @draft and @ui' 'src/main/resources'",
+              "runner": "ubuntu-latest",
+              "framework": "cucumber",
+              "report-position": "smoke-tests-ui-tests/target/cucumber-report.json",
+              "java-version": "17",
+              "images": {
+                "leads-cockpit": {
+                  "url": "https://a.d.com/sar/lm-leads-cockpit",
+                  "version-id": "4566483564"
+                },
+                "leads-service-partner": {
+                  "url": "https://a.d.com/sar/lm-leads-service-partner",
+                  "version-id": "8634538763"
+                },
+                "leads-customer": {
+                  "url": "https://a.d.com/sar/lm-leads-customer",
+                  "version-id": "5643453"
+                },
+                "leads-config": {
+                  "url": "https://a.d.com/sar/lm-leads-config",
+                  "version-id": "856354"
+                },
+                "leads-appointment": {
+                  "url": "https://a.d.com/sar/lm-leads-appointment",
+                  "version-id": "4139954349664"
+                },
+                "leads-local-packages": {
+                  "url": "https://a.d.com/sar/lm-leads-local-packages",
+                  "version-id": "63463453"
+                },
+                "analytics-ingester-rest": {
+                  "url": "https://a.d.com/sar/lm-analytics-ingester-rest",
+                  "version-id": "453735"
+                },
+                "analytics-digester-statistics": {
+                  "url": "https://a.d.com/sar/lm-analytics-digester-statistics",
+                  "version-id": "7537435"
+                }
+              }
+            }
+          }
+        },
+        "performance": {
+          "multi-image": "true",
+          "applications": {
+            "pla": {
+              "url": "sar/lm-leads-load-tests",
+              "environment": "QA",
+              "requirements": "k6-64541.sh",
+              "command": "k6 run src/k6/constant-vus.js --env EXECUTION_ENVIRONMENT=QA --env LOAD_TEST_USERNAME='${{ secrets.SGATE_USER }}' --env LOAD_TEST_PASSWORD='${{ secrets.SGATE_PWD }}' -o json=results.json",
+              "runner": "ubuntu-latest",
+              "framework": "k6",
+              "report-position": "summary.json",
+              "java-version": "17",
+              "images": {
+                "leads-cockpit": {
+                  "url": "https://a.d.com/sar/lm-leads-cockpit",
+                  "version-id": "413999208"
+                },
+                "leads-service-partner": {
+                  "url": "https://a.d.com/sar/lm-leads-service-partner",
+                  "version-id": "413999327"
+                },
+                "leads-customer": {
+                  "url": "https://a.d.com/sar/lm-leads-customer",
+                  "version-id": "413999464"
+                },
+                "leads-config": {
+                  "url": "https://a.d.com/sar/lm-leads-config",
+                  "version-id": "413999574"
+                },
+                "leads-appointment": {
+                  "url": "https://a.d.com/sar/lm-leads-appointment",
+                  "version-id": "413999664"
+                },
+                "leads-local-packages": {
+                  "url": "https://a.d.com/sar/lm-leads-local-packages",
+                  "version-id": "413999789"
+                },
+                "analytics-ingester-rest": {
+                  "url": "https://a.d.com/sar/lm-analytics-ingester-rest",
+                  "version-id": "413999875"
+                },
+                "analytics-digester-statistics": {
+                  "url": "https://a.d.com/sar/lm-analytics-digester-statistics",
+                  "version-id": "413999986"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
