@@ -1,0 +1,235 @@
+name: plse automanted
+on:
+  workflow_dispatch:
+   inputs:
+    base_url:
+     description: 'Base Url'
+     required: false
+     type: string
+     default: ""
+    fetch_all:
+     description: 'Run all OpenAPI files in the organization'
+     required: false
+     default: 'false'
+     type: boolean
+    repository:
+     description: 'Repository from which to retrieve the openAPI file(s), org/repo-name'
+     required: false
+     type: string
+     default: ""
+    environment:
+     description: 'The environment toward which to run tests'
+     required: true
+     type: environment
+    network:
+     description: 'The network on which to run the tests'
+     required: true
+     type: choice
+     options:
+       - INTRANET
+       - INTERNET
+    schema_url:
+     description: 'Schema Url (for online Swagger documentation, raw link)'
+     required: false
+     type: string
+     default: ""
+      
+jobs:    
+  plse:
+    name: Trigger plse
+    #runs-on: atc-ubuntu-latest
+    runs-on: ['pip']
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Login
+        id: login
+        run: |
+         cd /home/ec2-user
+         response=$(curl -X POST https://c-i.bg.n/plse/api/user/login \
+         -H "Content-Type: application/json" \
+         -d '{
+          "user_email": "${{ secrets.plse_USER }}",
+          "password": "${{ secrets.plse_PW }}",
+          "recaptcha_token": "TOKEN"
+         }')
+         echo $response
+         plse_response="plse_response.py"
+         cat << EOF > "$plse_response"
+         import json
+         response = '$response'
+         dict_response=json.loads(response)
+         jwt_token = dict_response['jwt_token']
+         print(jwt_token)
+         EOF
+         jwt_token=$(python plse_response.py)
+         echo "::set-output name=jwt_token::$jwt_token"
+    
+      - name: Download OpenAPI file from link
+        if: ${{ github.event.inputs.schema_url != '' }}
+        run: |
+          echo "Download OpenAPI file from the link provided"
+          curl -o openapi.yaml "${{ github.event.inputs.schema_url }}"
+ 
+      - name: Check if the repository is present in the JSON file
+        if: ${{ github.event.inputs.repository != '' }}
+        run: |
+          echo "Check if the repository is present in the JSON file"
+          repository_name="${{ github.event.inputs.repository_name }}"
+          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .URL' openapi_files.json)
+ 
+          if [ -n "$matched_urls" ]; then
+            echo "Repository found in JSON file, downloading associated files"
+            for url in $matched_urls; do
+              echo "Downloading $url"
+              curl -O "$url"
+            done
+          else
+            echo "Repository not found in JSON file, search via GitHub API"
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            response=$(curl -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/search/code?q=repo:${repository_name}+openapi")
+            file_url=$(echo "$response" | jq -r '.items[0].html_url')
+ 
+            if [ -n "$file_url" ]; then
+              echo "File found via GitHub API: $file_url"
+              curl -O "$file_url"
+            else
+              echo "No OpenAPI file found in the repository"
+            fi
+          fi
+
+      - name: ValidateBaseUrl
+        id: validateBaseUrl
+        run: | 
+         if [[ "${{ inputs.schema_url }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
+           echo "Getting base and schema...scenario 1"
+           base_urls=$(curl -X 'POST' "https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=${{ inputs.base_url }}&schema_url=${{ inputs.schema_url }}" -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -d '')
+           echo $base_urls
+           base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
+           echo $base_url
+           echo "::set-output name=base_url::$base_url"
+         elif [[ "${{ inputs.schema_file }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
+           echo "Getting base and schema...scenario 2"
+           curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/schema_url/${{ inputs.schema_file }}
+           ls
+           base_urls=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=${{ inputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@${{ inputs.schema_file }};type=application/json')
+           echo $base_urls
+           base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
+           echo $base_url
+           echo "::set-output name=base_url::$base_url"
+         else
+           echo "Getting base and schema...scenario 3"
+           curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/schema_url/check_control_messages.json
+           ls
+           base_urls=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=https://k-b-p-w.bg.n/openapi/kai/' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@check_control_messages.json;type=application/json')
+           echo $base_urls
+           base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
+           echo $base_url
+           echo "::set-output name=base_url::$base_url"
+         fi
+         
+         
+      - name: Validate schema file
+        id: validate
+        run: |
+         if [[ "${{ inputs.schema_url }}" != "" ]]; then
+          echo "scenario 1"
+          validate_response=$(curl -X 'POST' "https://c-i.bg.n/plse/api/fuzzer/validate?base_url=${{ steps.validateBaseUrl.outputs.base_url }}&schema_url=https://r.a-g.a.c.b/S-a-R/p/main/schema_url/${{ inputs.schema_url }}" -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -d '')
+          echo $validate_response
+          execution_id=$(echo "$validate_response" | jq -r '.execution_id' )
+          echo "::set-output name=execution_id::$execution_id"
+         elif [[ "${{ inputs.schema_file }}" != "" ]]; then
+          echo "scenario 2"
+          curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://r.a-g.a.c.b/S-a-R/p/main/schema_url/${{ inputs.schema_file }}
+          ls
+          validate_response=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validate_schema_file?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@${{ inputs.schema_file }};type=application/json')
+          echo $validate_response
+          execution_id=$(echo "$validate_response" | jq -r '.execution_id' )
+          echo "::set-output name=execution_id::$execution_id"
+         else
+          echo "scenario 3"
+          curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://r.a-g.a.c.b/S-a-R/p/main/schema_url/check_control_messages.json
+          #validate_response=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validate?base_url=${{ steps.validateBaseUrl.outputs.base_url }}&schema_url=https://r.a-g.a.c.b/S-a-R/p/main/schema_url/check_control_messages.json?token=GHSAT0AAAAAAAABZXUVGBQ3AUW56NJZMXTQZQVLDYQ' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -d '')
+          validate_response=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validate_schema_file?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@check_control_messages.json;type=application/json')
+          echo $validate_response
+          execution_id=$(echo "$validate_response" | jq -r '.execution_id' )
+          echo "::set-output name=execution_id::$execution_id"
+         fi
+         
+      - name: Get data sample
+        run: |
+         cd /home/ec2-user
+         data_sample=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/schemas/dataSamples?execution_id=${{ steps.validate.outputs.execution_id }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+         echo $data_sample
+         echo "$data_sample" > data_sample.json
+         
+      - name: Upload data sample
+        run: |
+         cd /home/ec2-user
+         curl -X 'POST' 'https://c-i.bg.n/plse/api/schemas/uploadDataSamples?base_url=${{ steps.validateBaseUrl.outputs.base_url }}&execution_id=${{ steps.validate.outputs.execution_id }}'   -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'data_samples=@data_sample.json;type=application/json'
+         
+      - name: Start Fuzzer
+        run: |
+         #if [[ "${{ inputs.endpoint }}" != "" ]]; then
+          #echo "scenario 1"
+          #curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/start' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: application/json' -d '{"base_url": "${{ steps.validateBaseUrl.outputs.base_url }}","execution_id": "${{ steps.validate.outputs.execution_id }}","select_endpoints": ["${{ inputs.endpoint }}"], "auth_details": {"basic_username": "","basic_password": "","bearer_token": "","api_key_key": "","api_key_value": "","api_key_location": "header"},"file_name": "","used_data_samples_from_db": false}'
+         #else
+         echo "scenario 2"
+         curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/start' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: application/json' -d '{"base_url": "${{ steps.validateBaseUrl.outputs.base_url }}","execution_id": "${{ steps.validate.outputs.execution_id }}","select_endpoints": [""], "auth_details": {"basic_username": "","basic_password": "","bearer_token": "","api_key_key": "","api_key_value": "","api_key_location": "header"},"file_name": " data_sample.json","used_data_samples_from_db": false}'
+         #fi
+         
+      - name: Follow the progress
+        run : |
+         progress_percent=0
+         while [ "$progress_percent" -lt 100 ]; do
+           progress_response=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/fuzzer/progress?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+           progress_percent=$(echo "$progress_response" | jq -r '.progress_percent')
+           echo "Progress percent: $progress_percent"
+           sleep 5  
+         done
+         echo "Progress reached 100%. Task completed."
+         
+      - name: Get results per endpoint
+        run: |
+         endpoint_response_full=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/results/combined/endpoints?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+         echo "$endpoint_response_full" > "endpoint_plse.json"
+         ls
+         curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/python_scripts/plse/endpoint_plse.py
+         ls
+         python3 endpoint_plse.py ${{ github.run_id }}
+         
+      - name: Get result per KPI
+        run: |
+         cd /home/ec2-user
+         timestamp=$(date +%Y%m%d_%H%M%S)
+         kpi_response_full=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/results/combined/kpis?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+         kpi_response=$(echo "$kpi_response_full" | jq '.[1] | {"status_code_errors": .status_code_errors,"schema_errors": .schema_errors,"content_type_errors": .content_type_errors,"server_errors": .server_errors,"header_errors": .header_errors,"coverage_missing": .coverage.missing,"coverage_generated": .coverage.generated,"coverage_total": .coverage.total,"success_total": .success.total,"success_successful": .success.successful,"success_failed": .success.failed,"base_url": .base_url,"execution_id": .execution_id, "tag": "plse_kpi"}')
+         echo "Last execution result"
+         #echo "$kpi_response" > "output_$timestamp.json"
+         
+      - name: Download PDF report
+        run: |
+         cd /home/ec2-user/single_reports
+         curl -X 'GET' 'https://c-i.bg.n/plse/api/results/downloadplseReport?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -o plse_report.pdf
+         ls
+         
+      - name: Download schema report
+        run: |
+         cd /home/ec2-user/single_reports
+         curl -X 'GET' 'https://c-i.bg.n/plse/api/results/downloadSchemaReport?base_url=${{ steps.validateBaseUrl.outputs.base_url }}&execution_id=${{ steps.validate.outputs.execution_id }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -o schema_report.pdf
+         ls
+       
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: plse-report
+          path: /home/ec2-user/single_reports/*.pdf
+        
+         
+        
+
+         
+
+
