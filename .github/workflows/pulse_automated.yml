@@ -40,8 +40,7 @@ on:
 jobs:     
   plse:
     name: Trigger plse
-    #runs-on: atc-ubuntu-latest
-    runs-on: ['pip']
+    runs-on: [ 'ubuntu-latest' ]
     steps:
 
       - name: Checkout
