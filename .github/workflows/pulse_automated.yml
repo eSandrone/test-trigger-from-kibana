@@ -80,7 +80,7 @@ jobs:
         run: |
           echo "Check if the repository is present in the JSON file"
           repository_name="${{ github.event.inputs.repository }}"
-          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .URL' openapi_urls.json)
+          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .url' openapi_urls.json)
  
           if [ -n "$matched_urls" ]; then
             echo "Repository found in JSON file, downloading associated files"
