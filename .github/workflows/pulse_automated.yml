@@ -20,7 +20,10 @@ on:
     environment:
      description: 'The environment toward which to run tests'
      required: true
-     type: environment
+     type: choice
+     options:
+       - QA
+       - PROD
     network:
      description: 'The network on which to run the tests'
      required: true
