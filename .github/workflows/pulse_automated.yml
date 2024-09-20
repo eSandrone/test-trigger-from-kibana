@@ -24,6 +24,14 @@ on:
      options:
        - QA
        - PROD
+    market:
+     description: 'The market toward which to run tests'
+     required: true
+     type: choice
+     options:
+       - INT
+       - QA
+       - PROD
     network:
      description: 'The network on which to run the tests'
      required: true
@@ -80,20 +88,21 @@ jobs:
         run: |
           echo "Check if the repository is present in the JSON file"
           repository_name="${{ github.event.inputs.repository }}"
-          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .url' openapi_urls.json)
+          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .path' openapi_urls.json)
  
           if [ -n "$matched_urls" ]; then
             echo "Repository found in JSON file, downloading associated files"
             for url in $matched_urls; do
-              echo "Downloading $url"
-              echo $url
+              echo "Downloading $repository_name/$path"
+              echo "https://raw.atc-github.azure.cloud.bmw/$path"
+              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$path"
               # curl -O "$url"
             done
           else
             echo "Repository not found in JSON file, search via GitHub API"
             # GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-            # response=$(curl -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/search/code?q=repo:${repository_name}+openapi")
-            # file_url=$(echo "$response" | jq -r '.items[0].html_url')
+            # response=$(curl -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/search/code?q=filename:openapi.json+repo:$repository_name")
+            # file_url=$(echo "$response" | jq -r '.items[0].path')
  
             # if [ -n "$file_url" ]; then
             #   echo "File found via GitHub API: $file_url"
