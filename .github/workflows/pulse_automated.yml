@@ -106,9 +106,7 @@ jobs:
             cd openapi_files
             for path in $matched_urls; do
               echo "Downloading $repository_name/$path"
-              # Uncomment the following line to download the file from the URL
-              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$path"
-              #touch $(basename "$path")
+              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.github.com/$path"
             done
             cd ..
           else
@@ -124,9 +122,7 @@ jobs:
                   cd openapi_files
                   while read -r path; do
                     echo "Downloading $repository_name/$path"
-                    # Uncomment the following line to download the file from the URL
-                    # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$path"
-                    #touch $(basename "$path")
+                    # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.github.com/$path"
                   done <<< "$file_urls"
                   cd ..
                 else
@@ -170,10 +166,6 @@ jobs:
                 select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
                        (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
                        (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
-              # if .servers then
-              #   .servers[] | 
-              #   select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-              #          (.description | tostring | ascii_downcase | contains($environment | ascii_downcase))) | .url
               else
                 empty
               end' "openapi_files/$file")
@@ -191,10 +183,6 @@ jobs:
                   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
                          (.url | ascii_downcase | contains($environment | ascii_downcase)) and 
                          (.url | ascii_downcase | contains($network | ascii_downcase))) | .url
-                # if .servers then
-                #   .servers[] | 
-                #   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
-                #          (.url | ascii_downcase | contains($environment | ascii_downcase))) | .url
                 else
                   empty
                 end' "openapi_files/$file")
