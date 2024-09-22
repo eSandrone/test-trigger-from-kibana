@@ -1,298 +1,298 @@
 [
     {
         "repo": "sar/sdm",
-        "url": "d435814939bab660b1c566309c10e31f0097ab09/kustomize/base/partials/billing-payment/process-ui/process_ui_openapi.json"
+        "path": "d435814939bab660b1c566309c10e31f0097ab09/kustomize/base/partials/billing-payment/process-ui/process_ui_openapi.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "ed00cf6f00e83353b77b3ecb0690027d62debbfa/kustomize/base/partials/billing-payment/process/process_openapi-get.json"
+        "path": "ed00cf6f00e83353b77b3ecb0690027d62debbfa/kustomize/base/partials/billing-payment/process/process_openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "e4e1aef83ab6df98956faf72ad6d19696ee3d066/kustomize/base/partials/billing-payment/payment/payment_openapi-get.json"
+        "path": "e4e1aef83ab6df98956faf72ad6d19696ee3d066/kustomize/base/partials/billing-payment/payment/payment_openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "25aaefd026b8b190fb68775b45bb00b56e884283/kustomize/base/partials/billing-payment/invoice/invoice_openapi-get.json"
+        "path": "25aaefd026b8b190fb68775b45bb00b56e884283/kustomize/base/partials/billing-payment/invoice/invoice_openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "f0658f292f13b76d6a3576192e9bc5f3e1fdb091/kustomize/base/partials/iobua/pti-provider/pti-openapi-get.json"
+        "path": "f0658f292f13b76d6a3576192e9bc5f3e1fdb091/kustomize/base/partials/iobua/pti-provider/pti-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "b5658c445c395b94a660330304e87f0a83ec7321/kustomize/base/partials/aos/basic/basic_openapi.json"
+        "path": "b5658c445c395b94a660330304e87f0a83ec7321/kustomize/base/partials/aos/basic/basic_openapi.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "a51e3e412789ca75a061cef2e590ea412295913f/kustomize/base/partials/april/vin-audit/vin-audit_openapi.json"
+        "path": "a51e3e412789ca75a061cef2e590ea412295913f/kustomize/base/partials/april/vin-audit/vin-audit_openapi.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "087fcd4a2be8dc4c7bac795d4b38088617cda387/kustomize/base/partials/april/token/token_openapi.json"
+        "path": "087fcd4a2be8dc4c7bac795d4b38088617cda387/kustomize/base/partials/april/token/token_openapi.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "041b05b9a610d39a1e791f1a0d89857632222567/kustomize/base/partials/b2iua/hokus/hokus-openapi-get.json"
+        "path": "041b05b9a610d39a1e791f1a0d89857632222567/kustomize/base/partials/b2iua/hokus/hokus-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "e07ddeacef4da73e347c6d5bd207ccdac3cd0c1c/kustomize/base/partials/b2iua/styx/styx-openapi-get.json"
+        "path": "e07ddeacef4da73e347c6d5bd207ccdac3cd0c1c/kustomize/base/partials/b2iua/styx/styx-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "e412fe272ecd2b95faf3896d863b16a633e733b5/kustomize/base/partials/aos/translator/translator_openapi.json"
+        "path": "e412fe272ecd2b95faf3896d863b16a633e733b5/kustomize/base/partials/aos/translator/translator_openapi.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "7084e4327438db659258bdc0052f71dbe23c219f/kustomize/base/partials/aos/metis/metis_openapi-get.json"
+        "path": "7084e4327438db659258bdc0052f71dbe23c219f/kustomize/base/partials/aos/metis/metis_openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "be366be45b9af0a9fd24162c72746cd0c6e6d52e/kustomize/base/partials/billing-payment/process-overview/process_overview_openapi-get.json"
+        "path": "be366be45b9af0a9fd24162c72746cd0c6e6d52e/kustomize/base/partials/billing-payment/process-overview/process_overview_openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "451ed12d09951869809d439b004a276cd7bf77c3/kustomize/base/partials/billing-payment/product-catalog/product-catalog_openapi-get.json"
+        "path": "451ed12d09951869809d439b004a276cd7bf77c3/kustomize/base/partials/billing-payment/product-catalog/product-catalog_openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "c25dfadd87cd79327e6d46436bb0a7272477eda6/kustomize/base/partials/iobua/pti-importer/pti-importer-openapi-get.json"
+        "path": "c25dfadd87cd79327e6d46436bb0a7272477eda6/kustomize/base/partials/iobua/pti-importer/pti-importer-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "b5de75446cb9b3b28fe3511b171f8d406321d077/kustomize/base/partials/b2iua/vat-validator/vat-validator-openapi-get.json"
+        "path": "b5de75446cb9b3b28fe3511b171f8d406321d077/kustomize/base/partials/b2iua/vat-validator/vat-validator-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "3935d56edcac521a138395d8043302a5151f15fc/kustomize/base/partials/b2iua/abra-engine/abra-engine-openapi-get.json"
+        "path": "3935d56edcac521a138395d8043302a5151f15fc/kustomize/base/partials/b2iua/abra-engine/abra-engine-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "eb5b1b72e81ed02943067e1fe1fe30cfd4c58d94/kustomize/base/partials/billing-payment/directpay/fetch_the_openapi_specification_document.json"
+        "path": "eb5b1b72e81ed02943067e1fe1fe30cfd4c58d94/kustomize/base/partials/billing-payment/directpay/fetch_the_openapi_specification_document.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "6dd740cd4479e55235a1aaecb72f2a42c8890698/kustomize/base/partials/iobua/vin-decoder-lite/vin-decoder-lite-openapi-get.json"
+        "path": "6dd740cd4479e55235a1aaecb72f2a42c8890698/kustomize/base/partials/iobua/vin-decoder-lite/vin-decoder-lite-openapi-get.json"
     },
     {
         "repo": "sar/sdm",
-        "url": "da7f0270d37a68964d6bdb0d2a64563883281820/kustomize/base/partials/iobua/technical-campaign-facade/technical-campaign-facade-openapi-get.json"
+        "path": "da7f0270d37a68964d6bdb0d2a64563883281820/kustomize/base/partials/iobua/technical-campaign-facade/technical-campaign-facade-openapi-get.json"
     },
     {
         "repo": "sar/con",
-        "url": "bd8d510811ebd6b24000304744a4667b98988852/docs/architecture/api/openapi.json"
+        "path": "bd8d510811ebd6b24000304744a4667b98988852/docs/architecture/api/openapi.json"
     },
     {
         "repo": "sar/onl",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/afz",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/fhist",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/afz",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/fhist",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/fzk",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/rol",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/tm",
-        "url": "main/resources/documentation/openapi.json"
+        "path": "main/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/archetype",
-        "url": "cae/quarkus-archetype-rest-api/docs/openapi/openapi.json"
+        "path": "cae/quarkus-archetype-rest-api/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/icons",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/messages",
-        "url": "applicationTest/resources/messages-openapi.json"
+        "path": "applicationTest/resources/messages-openapi.json"
     },
     {
         "repo": "sar/supply",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/interpretation",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/pool",
-        "url": "applicationTest/resources/pool-openapi.json"
+        "path": "applicationTest/resources/pool-openapi.json"
     },
     {
         "repo": "sar/remote-read",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/evaluation",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/history",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/information",
-        "url": "applicationTest/resources/openapi.json"
+        "path": "applicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/smart-maintenance",
-        "url": "smartapplicationTest/resources/smart-maintenance-openapi.json"
+        "path": "smartapplicationTest/resources/smart-maintenance-openapi.json"
     },
     {
         "repo": "sar/vehicle-information",
-        "url": "vehicleapplicationTest/resources/vehicle-information-openapi.json"
+        "path": "vehicleapplicationTest/resources/vehicle-information-openapi.json"
     },
     {
         "repo": "sar/vkdei",
-        "url": "applicationTest/resources/vkdei-openapi.json"
+        "path": "applicationTest/resources/vkdei-openapi.json"
     },
     {
         "repo": "sar/teletickets",
-        "url": "applicationTest/resources/teletickets-openapi.json"
+        "path": "applicationTest/resources/teletickets-openapi.json"
     },
     {
         "repo": "sar/svc-esh",
-        "url": "svce74027489b72ac16ce6c3582fa9abe7306f772a7/esh-api/docs/openapi/openapi.json"
+        "path": "svce74027489b72ac16ce6c3582fa9abe7306f772a7/esh-api/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/fault-codes",
-        "url": "faultapplicationTest/resources/openapi.json"
+        "path": "faultapplicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/AIRFlatrateResearch-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/AIRFlatrateResearch-openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/AIRHS-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/AIRHS-openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/AIRM-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/AIRM-openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/AIRNM-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/AIRNM-openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/CKFSH-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/CKFSH-openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/AIRVS-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/AIRVS-openapi.json"
     },
     {
         "repo": "sar/Mobile",
-        "url": "/ISPAMobile/Services/openapi/AIRCSM-openapi.json"
+        "path": "/ISPAMobile/Services/openapi/AIRCSM-openapi.json"
     },
     {
         "repo": "sar/shadow-warranty",
-        "url": "shadowmain/resources/documentation/openapi.json"
+        "path": "shadowmain/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/shadow-steering",
-        "url": "shadowmain/resources/documentation/openapi.json"
+        "path": "shadowmain/resources/documentation/openapi.json"
     },
     {
         "repo": "sar/svc-orderdata",
-        "url": "orderdata-query/docs/openapi/openapi.json"
+        "path": "orderdata-query/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/core-comprehensive-text-service",
-        "url": "core-comprehensive-textmain/api-spec/openapi.json"
+        "path": "core-comprehensive-textmain/api-spec/openapi.json"
     },
     {
         "repo": "sar/svc-keydata",
-        "url": "keydata-query/docs/openapi/openapi.json"
+        "path": "keydata-query/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-document",
-        "url": "document-ingestion-rest/docs/openapi/openapi.json"
+        "path": "document-ingestion-rest/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/core-ride-calculation",
-        "url": "core-ridemain/api-spec/air-openapi.json"
+        "path": "core-ridemain/api-spec/air-openapi.json"
     },
     {
         "repo": "sar/core-ride-calculation",
-        "url": "core-ridemain/api-spec/history-openapi.json"
+        "path": "core-ridemain/api-spec/history-openapi.json"
     },
     {
         "repo": "sar/core-ride-calculation",
-        "url": "core-ridemain/api-spec/kai-openapi-cbs-icons-m2m.json"
+        "path": "core-ridemain/api-spec/kai-openapi-cbs-icons-m2m.json"
     },
     {
         "repo": "sar/svc-readout-query",
-        "url": "docs/openapi/openapi.json"
+        "path": "docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-rsu",
-        "url": "rsu-query/docs/openapi/openapi.json"
+        "path": "rsu-query/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-display-protocol",
-        "url": "docs/openapi/openapi.json"
+        "path": "docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-query-service",
-        "url": "svc-query77ff379f4bb92485b4b4d919657224cba0027c20/query-service/docs/openapi/openapi.json"
+        "path": "svc-query77ff379f4bb92485b4b4d919657224cba0027c20/query-service/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/log-collector-kai",
-        "url": "log-collectorapplicationTest/resources/openapi.json"
+        "path": "log-collectorapplicationTest/resources/openapi.json"
     },
     {
         "repo": "sar/svc-esh-resender",
-        "url": "esh-resender/docs/openapi/openapi.json"
+        "path": "esh-resender/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-keydata-resender",
-        "url": "keydata-resender/docs/openapi/openapi.json"
+        "path": "keydata-resender/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-rsu-resender",
-        "url": "rsu-resender/docs/openapi/openapi.json"
+        "path": "rsu-resender/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-document-admin-api",
-        "url": "svc-document-admin7f62b88b1e54684d62a92ada63e0f31d458ca69c/document-admin-api/docs/openapi/openapi.json"
+        "path": "svc-document-admin7f62b88b1e54684d62a92ada63e0f31d458ca69c/document-admin-api/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-keydata-next",
-        "url": "svc-keydata2564f36ebcd674551b16ff385d7bb22344335ddb/keydata-query/docs/openapi/openapi.json"
+        "path": "svc-keydata2564f36ebcd674551b16ff385d7bb22344335ddb/keydata-query/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-orderdata-resender",
-        "url": "svc-orderdataab4b25a1c607a33c2d738c587ea0448aebfed4e4/orderdata-resender/docs/openapi/openapi.json"
+        "path": "svc-orderdataab4b25a1c607a33c2d738c587ea0448aebfed4e4/orderdata-resender/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/svc-readout-next",
-        "url": "svc-readout35d4931ad0e83cd282aec3dbf557c81d94c990b2/readout-query/docs/openapi/openapi.json"
+        "path": "svc-readout35d4931ad0e83cd282aec3dbf557c81d94c990b2/readout-query/docs/openapi/openapi.json"
     },
     {
         "repo": "sar/nifty-bff",
-        "url": "nifty49bec93e63e6ae35b6b1f42cfd69e9a40796d2c8/docs/openapi/openapi.json"
+        "path": "nifty49bec93e63e6ae35b6b1f42cfd69e9a40796d2c8/docs/openapi/openapi.json"
     }
 ]
