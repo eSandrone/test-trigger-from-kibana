@@ -165,15 +165,15 @@ jobs:
           
             # Cerca il server nel file OpenAPI basato su market, environment e network
             server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-              # if .servers then
-              #   .servers[] | 
-              #   select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-              #          (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
-              #          (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
               if .servers then
                 .servers[] | 
                 select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-                       (.description | tostring | ascii_downcase | contains($environment | ascii_downcase))) | .url
+                       (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
+                       (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
+              # if .servers then
+              #   .servers[] | 
+              #   select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
+              #          (.description | tostring | ascii_downcase | contains($environment | ascii_downcase))) | .url
               else
                 empty
               end' "openapi_files/$file")
@@ -186,15 +186,15 @@ jobs:
           
               # Se la descrizione non è utile, cerca il server basandoti sull'URL
               server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-                # if .servers then
-                #   .servers[] | 
-                #   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
-                #          (.url | ascii_downcase | contains($environment | ascii_downcase)) and 
-                #          (.url | ascii_downcase | contains($network | ascii_downcase))) | .url
                 if .servers then
                   .servers[] | 
                   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
-                         (.url | ascii_downcase | contains($environment | ascii_downcase))) | .url
+                         (.url | ascii_downcase | contains($environment | ascii_downcase)) and 
+                         (.url | ascii_downcase | contains($network | ascii_downcase))) | .url
+                # if .servers then
+                #   .servers[] | 
+                #   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
+                #          (.url | ascii_downcase | contains($environment | ascii_downcase))) | .url
                 else
                   empty
                 end' "openapi_files/$file")
