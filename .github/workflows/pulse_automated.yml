@@ -34,9 +34,9 @@ on:
      required: true
      type: choice
      options:
-       - INT
-       - QA
-       - PROD
+       - US
+       - EMEA
+       - CN
     network:
      description: 'The network on which to run the tests'
      required: true
