@@ -150,49 +150,47 @@ jobs:
           
           echo "Files found:"
           echo "$file_list"
-
+          
           # Inizializza un array vuoto per salvare i dati JSON
           results_json="[]"
-
+          
           for file in $file_list; do
             echo "Processing $file..."
-
+          
             # Definizione delle variabili di input
             market="${{ github.event.inputs.market }}"
             environment="${{ github.event.inputs.environment }}"
             network="${{ github.event.inputs.network }}"
             echo "$market $environment $network"
-
+          
             # Cerca il server nel file OpenAPI basato su market, environment e network
-            # server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-            server=$(jq -r --arg market "$market" --arg environment "$environment" '
+            server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
               # if .servers then
               #   .servers[] | 
               #   select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-              #          (.description | tostring | ascii_downcase | contains($environment) | ascii_downcase) and 
-              #          (.description | tostring | ascii_downcase | contains($network) | ascii_downcase)) | .url
+              #          (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
+              #          (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
               if .servers then
                 .servers[] | 
                 select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-                      (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) | .url
+                       (.description | tostring | ascii_downcase | contains($environment | ascii_downcase))) | .url
               else
                 empty
               end' "openapi_files/$file")
-
+          
             # Se il server è stato trovato tramite la descrizione
             if [ -n "$server" ]; then
               echo "Server found for $file from description: $server"
             else
               echo "No server found from description, trying to infer from URL for $file"
-
+          
               # Se la descrizione non è utile, cerca il server basandoti sull'URL
-              # server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-              server=$(jq -r --arg market "$market" --arg environment "$environment" '
+              server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
                 # if .servers then
                 #   .servers[] | 
-                #   select((.url | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-                #          (.url | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
-                #          (.url | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
+                #   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
+                #          (.url | ascii_downcase | contains($environment | ascii_downcase)) and 
+                #          (.url | ascii_downcase | contains($network | ascii_downcase))) | .url
                 if .servers then
                   .servers[] | 
                   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
@@ -200,7 +198,7 @@ jobs:
                 else
                   empty
                 end' "openapi_files/$file")
-
+          
               if [ -n "$server" ]; then
                 echo "Server inferred from URL for $file: $server"
               else
@@ -208,17 +206,18 @@ jobs:
                 exit 1
               fi
             fi
-
+          
             echo "Selected server for $file: $server"
-
+          
             # Aggiungi i dati nel formato JSON
             file_path=$(realpath "openapi_files/$file")
             results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
           done
-
+          
           # Salva il JSON finale su un file
           echo "$results_json" > openapi_results.json
           echo "Saved JSON results to openapi_results.json"
+
 
       - name: Upload OpenAPI results as GitHub artifact
         uses: actions/upload-artifact@v3
