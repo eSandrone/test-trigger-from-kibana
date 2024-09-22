@@ -8,7 +8,7 @@ on:
      type: string
      default: ""
     fetch_all:
-     description: 'Run all OpenAPI files in the organization'
+     description: 'Run all OpenAPI files in the organization (WIP)'
      required: false
      default: 'false'
      type: boolean
@@ -81,87 +81,140 @@ jobs:
         if: ${{ github.event.inputs.schema_url != '' }}
         run: |
           echo "Download OpenAPI file from the link provided"
-          curl -o openapi.yaml "${{ github.event.inputs.schema_url }}"
- 
-      - name: Check if the repository is present in the JSON file
-        if: ${{ github.event.inputs.repository != '' }}
-        run: |
-          echo "Check if the repository is present in the JSON file"
-          repository_name="${{ github.event.inputs.repository }}"
-          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .path' openapi_urls.json)
- 
-          if [ -n "$matched_urls" ]; then
-            echo "Repository found in JSON file, downloading associated files"
-            for url in $matched_urls; do
-              echo "Downloading $repository_name/$path"
-              echo "https://raw.atc-github.azure.cloud.bmw/$path"
-              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$path"
-              # curl -O "$url"
-            done
-          else
-            echo "Repository not found in JSON file, search via GitHub API"
-            # GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-            # response=$(curl -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/search/code?q=filename:openapi.json+repo:$repository_name")
-            # file_url=$(echo "$response" | jq -r '.items[0].path')
- 
-            # if [ -n "$file_url" ]; then
-            #   echo "File found via GitHub API: $file_url"
-            #   curl -O "$file_url"
-            # else
-            #   echo "No OpenAPI file found in the repository"
-            # fi
-          fi
+          # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "${{ github.event.inputs.schema_url }}"  
 
       # Step 4: Se l'utente ha impostato fetch_all a true, scarica tutti i file nel JSON
-      - name: Recupera tutti i file dal JSON
-        if: ${{ github.event.inputs.fetch_all == 'true' }}
+      # - name: Recupera tutti i file dal JSON
+      #   if: ${{ github.event.inputs.fetch_all == 'true' }}
+      #   run: |
+      #     echo "Recuperando tutti i file OpenAPI dal file JSON"
+      #     all_urls=$(jq -r '.[] | .path' openapi_urls.json)
+      #     for path in $all_urls; do
+      #       echo "Scaricando $path"
+      #     done
+ 
+      - name: Check if the repository is present in the JSON file and download all OpenAPI files
+        if: ${{ github.event.inputs.repository != '' }}
         run: |
-          echo "Recuperando tutti i file OpenAPI dal file JSON"
-          all_urls=$(jq -r '.[] | .URL' openapi_files.json)
-          for url in $all_urls; do
-            echo "Scaricando $url"
-          done
+          echo "Checking if the repository is present in the JSON file"
+          repository_name="${{ github.event.inputs.repository }}"
+          matched_urls=$(jq -r --arg repo "$repository_name" '.[] | select(.repo == $repo) | .path' openapi_urls.json)
+          mkdir -p openapi_files
 
-      # Step 5: Se il parametro server è vuoto, recuperalo dal file OpenAPI
-      - name: Recupera server dal file OpenAPI
-        if: ${{ github.event.inputs.server == '' }}
-        run: |
-          echo "Il parametro server è vuoto, recupero dal file OpenAPI"
-
-          # Definizione delle variabili di input
-          market="${{ github.event.inputs.market }}"
-          environment="${{ github.event.inputs.environment }}"
-          network="${{ github.event.inputs.network }}"
-
-          # Cerca il server nel file OpenAPI basato su market, environment e network
-          server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-            .servers[] | 
-            select((.description | contains($market)) and 
-                   (.description | contains($environment)) and 
-                   (.description | contains($network))) | .url' openapi.json)
-
-          # Se il server è stato trovato tramite la descrizione
-          if [ -n "$server" ]; then
-            echo "Server trovato dalla descrizione: $server"
+          if [ -n "$matched_urls" ]; then
+            echo "Repository found in JSON file, downloading associated files"
+            cd openapi_files
+            for path in $matched_urls; do
+              echo "Downloading $repository_name/$path"
+              # Uncomment the following line to download the file from the URL
+              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$path"
+              #touch $(basename "$path")
+            done
+            cd ..
           else
-            echo "Nessun server trovato tramite descrizione, tentando di recuperarlo dall'URL"
+            echo "Repository not found in JSON file, searching via GitHub API"
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            response=$(curl -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/search/code?q=filename:openapi.json+repo:$repository_name")
+            
+            if [[ $(echo "$response" | jq -r '.total_count') -gt 0 ]]; then
+                file_urls=$(echo "$response" | jq -r '.items[].path')
+                echo "Files found via GitHub API: $file_urls"
 
-            # Se la descrizione non è utile, cerca il server basandoti sull'URL
-            server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-              .servers[] | 
-              select((.url | contains($market | ascii_downcase)) and 
-                     (.url | contains($environment | ascii_downcase)) and 
-                     (.url | contains($network | ascii_downcase))) | .url' openapi.yaml)
-
-            if [ -n "$server" ]; then
-              echo "Server trovato dall'URL: $server"
+                if [ -n "$file_urls" ]; then
+                  cd openapi_files
+                  while read -r path; do
+                    echo "Downloading $repository_name/$path"
+                    # Uncomment the following line to download the file from the URL
+                    # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$path"
+                    #touch $(basename "$path")
+                  done <<< "$file_urls"
+                  cd ..
+                else
+                  echo "No OpenAPI files found in the repository"
+                  exit 1
+                fi
             else
-              echo "Errore: Nessun server trovato corrispondente ai parametri forniti"
+              echo "No OpenAPI files found via GitHub API"
               exit 1
             fi
           fi
 
-          echo "Server selezionato: $server"
+      - name: Generate file list from openapi_files and associate with server
+        run: |
+          echo "Generating list of files in openapi_files"
+          file_list=$(ls openapi_files)
+          if [ -z "$file_list" ]; then
+            echo "No files found in openapi_files directory"
+            exit 1
+          fi
+          
+          echo "Files found:"
+          echo "$file_list"
+
+          # Inizializza un array vuoto per salvare i dati JSON
+          results_json="[]"
+
+          for file in $file_list; do
+            echo "Processing $file..."
+
+            # Definizione delle variabili di input
+            market="${{ github.event.inputs.market }}"
+            environment="${{ github.event.inputs.environment }}"
+            network="${{ github.event.inputs.network }}"
+
+            # Cerca il server nel file OpenAPI basato su market, environment e network
+            server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
+              if .servers then
+                .servers[] | 
+                select((.description | contains($market)) and 
+                       (.description | contains($environment)) and 
+                       (.description | contains($network))) | .url
+              else
+                empty
+              end' "openapi_files/$file")
+
+            # Se il server è stato trovato tramite la descrizione
+            if [ -n "$server" ]; then
+              echo "Server found for $file from description: $server"
+            else
+              echo "No server found from description, trying to infer from URL for $file"
+
+              # Se la descrizione non è utile, cerca il server basandoti sull'URL
+              server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
+                if .servers then
+                  .servers[] | 
+                  select((.url | contains($market | ascii_downcase)) and 
+                         (.url | contains($environment | ascii_downcase)) and 
+                         (.url | contains($network | ascii_downcase))) | .url
+                else
+                  empty
+                end' "openapi_files/$file")
+
+              if [ -n "$server" ]; then
+                echo "Server inferred from URL for $file: $server"
+              else
+                echo "Error: No server found for $file with the provided criteria"
+                exit 1
+              fi
+            fi
+
+            echo "Selected server for $file: $server"
+
+            # Aggiungi i dati nel formato JSON
+            file_path=$(realpath "openapi_files/$file")
+            results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
+          done
+
+          # Salva il JSON finale su un file
+          echo "$results_json" > openapi_results.json
+          echo "Saved JSON results to openapi_results.json"
+
+      - name: Upload OpenAPI results as GitHub artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: openapi-results
+          path: openapi_results.json
+
 
       # - name: ValidateBaseUrl
       #   id: validateBaseUrl
