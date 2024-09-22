@@ -1,0 +1,1192 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Check-Control-Messages API",
+    "description": "<h2>Check Control Message</h2>\nA check control message (CCM) is a notification to the driver from the Check Control system in the event of a fault,\ne.g. a system failure, being detected by the monitoring control unit.\nCheck controls vary in severity from mere warnings to highly critical failures.\nExamples: An unclosed door (warning) or a brake failure (critical).\nThey are displayed as long as they are relevant. Therefore, these are declared \"active\" CCMs.\n<h2>Historized Check Control Messages</h2>\nCheck controls, which are not active any more, can still be useful to support a root cause analysis and are therefore provided as inactive/historized CCMs.\n<h2>Sources</h2>\nThere are two sources for CCM data, namely over-the-air data from the vehicle or key reads, either as remote key or physical reads.\nThe grouping of active CCMs and the amount of historized CCMs varies depending on the source.\n",
+    "version": "3.0.3-bd104c900c"
+  },
+  "servers": [
+    {
+      "url": "https://ckf-int.bg.net",
+      "description": "EMEA-INT (Intranet)"
+    },
+    {
+      "url": "https://ckf-int.bg.com",
+      "description": "EMEA-INT (Internet)"
+    },
+    {
+      "url": "https://mtls.ckf-int.bg.com",
+      "description": "EMEA-INT (Internet, mTLS)"
+    },
+    {
+      "url": "https://ckf-qa.bg.net",
+      "description": "EMEA-QA (Intranet)"
+    },
+    {
+      "url": "https://ckf-qa.bg.com",
+      "description": "EMEA-QA (Internet)"
+    },
+    {
+      "url": "https://mtls.ckf-qa.bg.com",
+      "description": "EMEA-QA (Internet, mTLS)"
+    },
+    {
+      "url": "https://ckf-us-qa.bg.net",
+      "description": "US-QA (Intranet)"
+    },
+    {
+      "url": "https://ckf-us-qa.bg.com",
+      "description": "US-QA (Internet)"
+    },
+    {
+      "url": "https://ckf-cn-qa.bg.net",
+      "description": "CN-QA (Intranet)"
+    },
+    {
+      "url": "https://ckf-qa.bg.com.cn",
+      "description": "CN-QA (Internet)"
+    },
+    {
+      "url": "https://ckf.bg.net",
+      "description": "EMEA-PROD (Intranet)"
+    },
+    {
+      "url": "https://ckf.bg.com",
+      "description": "EMEA-PROD (Internet)"
+    },
+    {
+      "url": "https://mtls.ckf.bg.com",
+      "description": "EMEA-PROD (Internet, mTLS)"
+    },
+    {
+      "url": "https://ckf-us.bg.net",
+      "description": "US-PROD (Intranet)"
+    },
+    {
+      "url": "https://ckf-us.bg.com",
+      "description": "US-PROD (Internet)"
+    },
+    {
+      "url": "https://ckf-cn.bg.net",
+      "description": "CN-PROD (Intranet)"
+    },
+    {
+      "url": "https://ckf.bg.com.cn",
+      "description": "CN-PROD (Internet)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "B2D authentication",
+      "description": "The endpoint supports B2D authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "M2M-B2D authentication",
+      "description": "The endpoint supports M2M-B2D authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "B2E authentication",
+      "description": "The endpoint supports B2E authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "B2I authentication",
+      "description": "The endpoint supports B2I authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "M2M-B2I authentication",
+      "description": "The endpoint supports M2M-B2I authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "Basic authentication",
+      "description": "The endpoint supports Basic authentication. This form of authentication is deprecated and should not be used anymore.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "CSSL authentication",
+      "description": "The endpoint supports CSSL-JWT authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "ILEAN authentication",
+      "description": "The endpoint supports ILEAN authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "M2M_TOKEN authentication",
+      "description": "The endpoint supports M2M token authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    },
+    {
+      "name": "BASIC_AUTH_WEN_FOR_CA authentication",
+      "description": "The endpoint supports WEN for CA basic authentication.",
+      "externalDocs": {
+        "description": "Authentication Documentation",
+        "url": "https://atc.bg.net/confluence/x/KRnXgQ"
+      }
+    }
+  ],
+  "paths": {
+    "/api/check-control-messages/service-demands/{vin}": {
+      "get": {
+        "tags": [
+          "B2D authentication"
+        ],
+        "summary": "fetches the service demand for check control messages",
+        "operationId": "getCheckControlMessages",
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "description": "A 17 letter vehicle identification number; the pattern is [0-9a-zA-Z]{17}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "WBAGT2107LLE41319"
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "a language tag consisting of a two-letter language code and a two-letter country code; the pattern is [a-z]{2}-[A-Z]{2}",
+            "required": true,
+            "schema": {
+              "default": "en-GB",
+              "type": "string"
+            },
+            "style": "form",
+            "example": "de-DE"
+          },
+          {
+            "name": "cavors-request-id",
+            "in": "header",
+            "description": "The CaVORS request identifier marks a request, especially for logging purposes. This identifier may be provided by the client application to relate the request to preceding requests. This header is specific to CaVORS applications, since all CaVORS applications share the same logging system.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cavors-session-id",
+            "in": "header",
+            "description": "The CaVORS session identifier marks all requests of a user session, especially for logging and analytics purposes. This identifier may be provided by the client application to relate the request to further requests of the user session. This header is specific to CaVORS applications, since all CaVORS applications share the same logging and analytics systems.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request was successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceDemandsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication was missing or authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The user has no permission to access this resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource was not found. Check that all required parameters of the resource are provided and that all parameters conform to their schema. Consider that the requested resource might be missing or gone.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The response of the Key Pool is not processable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An internal error occurred",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_dist_partner": [],
+            "auth_outlet": [],
+            "wen_token": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_buno": [],
+            "wen_token": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_dist_partner": [],
+            "auth_outlet": [],
+            "wen_cookie": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_buno": [],
+            "wen_cookie": []
+          }
+        ]
+      }
+    },
+    "/api/check-control-messages/vehicles/{vin}": {
+      "get": {
+        "tags": [
+          "B2D authentication",
+          "M2M-B2D authentication",
+          "B2I authentication"
+        ],
+        "summary": "Fetches check control messages for a vehicle",
+        "operationId": "getCheckControlSets",
+        "parameters": [
+          {
+            "name": "vin",
+            "in": "path",
+            "description": "A 17 letter vehicle identification number; the pattern is [0-9a-zA-Z]{17}",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "WBAGT2107LLE41319"
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "A language tag consisting of a two-letter language code and a two-letter country code; the pattern is [a-z]{2}-[A-Z]{2}",
+            "required": false,
+            "schema": {
+              "default": "en-GB",
+              "type": "string"
+            },
+            "style": "form",
+            "example": "de-DE"
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "description": "Optional filter for source",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "VEHICLE_OTA"
+          },
+          {
+            "name": "cavors-request-id",
+            "in": "header",
+            "description": "The CaVORS request identifier marks a request, especially for logging purposes. This identifier may be provided by the client application to relate the request to preceding requests. This header is specific to CaVORS applications, since all CaVORS applications share the same logging system.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cavors-session-id",
+            "in": "header",
+            "description": "The CaVORS session identifier marks all requests of a user session, especially for logging and analytics purposes. This identifier may be provided by the client application to relate the request to further requests of the user session. This header is specific to CaVORS applications, since all CaVORS applications share the same logging and analytics systems.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of check control sets from all available sources. If a source filter parameter is provided, only data from requested data source will be returned. The returned active check control messages are sorted first by priority and then by mileage.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "A response containing check controls from all requested sources. Check control messages are displayed in historized context and as active items",
+                  "type": "object",
+                  "properties": {
+                    "checkControlSets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CheckControlSet"
+                      }
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ErrorResponse"
+                      }
+                    }
+                  },
+                  "example": {
+                    "checkControlSets": [
+                      {
+                        "activeCheckControlGroups": [
+                          {
+                            "checkControls": [
+                              {
+                                "identifier": "00400",
+                                "message": "long CCM for 9500400",
+                                "mileage": 40863,
+                                "occurredAt": "2023-07-03T09:28:32.000Z",
+                                "occurrences": 2,
+                                "title": "short CCM for 9500400"
+                              }
+                            ],
+                            "colorStatus": "YELLOW",
+                            "eventIdentifier": "CcmEngineNonUrgent",
+                            "groupName": "group name for event identifier CcmEngineNonUrgent",
+                            "publishedRecommendedCustomerAction": "recommended customer action for SCHEDULE_APPOINTMENT",
+                            "recommendedCustomerAction": "SCHEDULE_APPOINTMENT",
+                            "urgency": 80
+                          }
+                        ],
+                        "createdAt": "2023-07-03T09:28:34.109Z",
+                        "historizedCheckControls": [
+                          {
+                            "identifier": "00400",
+                            "message": "long CCM for 9500400",
+                            "mileage": 40863,
+                            "occurredAt": "2023-07-03T09:28:32.000Z",
+                            "occurrences": 2,
+                            "title": "short CCM for 9500400"
+                          },
+                          {
+                            "identifier": "02421",
+                            "message": "long CCM for 9502421",
+                            "mileage": 40856,
+                            "occurredAt": "2023-07-03T09:28:33.288Z",
+                            "occurrences": 1,
+                            "title": "short CCM for 9502421"
+                          }
+                        ],
+                        "mileage": 40913,
+                        "source": "VEHICLE_OTA"
+                      }
+                    ],
+                    "errors": []
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The request was invalid. Check that all required information is provided in the request body and the request headers and verify that all provided information conforms to the specified requirements. Further information is provided in the response body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No authentication was provided or the provided authentication is invalid. Check that proper authentication, such as credentials or tokens or cookies, is provided and verify that the request contains all necessary authentication headers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The authenticated principal has no permission to access this resource. Check that authentication suitable for the resource is provided.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested resource was not found. Check that all required parameters of the resource are provided and that all parameters conform to their schema. Consider that the requested resource might be missing or gone.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An internal error occurred. The service failed to handle the request appropriately and triggered an alarm. If the problem remains, raise a ticket with the information provided in the response body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_dist_partner": [],
+            "auth_outlet": [],
+            "wen_token": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_buno": [],
+            "wen_token": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_dist_partner": [],
+            "auth_outlet": [],
+            "wen_cookie": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_buno": [],
+            "wen_cookie": []
+          },
+          {
+            "machine_token": [],
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_buno": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_app_id": [],
+            "auth_session": [],
+            "wen_cookie": []
+          },
+          {
+            "auth_scheme": [],
+            "auth_type": [],
+            "auth_app_id": [],
+            "auth_session": [],
+            "wen_token": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CheckControl": {
+        "description": "A check control event describing the associated check control message and its historical context",
+        "required": [
+          "identifier",
+          "occurrences"
+        ],
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "description": "The code of the check control",
+            "type": "string"
+          },
+          "mileage": {
+            "format": "int32",
+            "description": "The mileage at which the check control occurred last. Distance unit = km",
+            "type": "integer",
+            "nullable": true
+          },
+          "occurredAt": {
+            "format": "date-time",
+            "description": "The ISO-8601 timestamp at which the check control occurred for over-the-air check controls",
+            "type": "string",
+            "example": "2022-03-10T16:15:50.000Z",
+            "nullable": true
+          },
+          "occurrences": {
+            "format": "int32",
+            "description": "The number of times the check control has occurred so far. For source VEHICLE_OTA, the interval for which the occurrences are aggregated is the last six months. For source KEY_READ, only the last 40 CCMs minus the number of active CCMs are aggregated.",
+            "type": "integer",
+            "example": 3
+          },
+          "title": {
+            "description": "Short description of the check control",
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "description": "Full message of the check control",
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CheckControlGroup": {
+        "description": "A group of related check control messages",
+        "type": "object",
+        "properties": {
+          "eventIdentifier": {
+            "description": "For source VEHICLE_OTA, eventIdentifier maps to the SEAM event identifier. This field is not included for source KEY_READ",
+            "type": "string"
+          },
+          "urgency": {
+            "format": "int32",
+            "description": "Describes how urgent the resolving of a check control event is. The lower, the more urgent it is",
+            "type": "integer"
+          },
+          "recommendedCustomerAction": {
+            "description": "The action the customer is recommended to take as provided by SEAM",
+            "type": "string",
+            "example": "CALL_RSA"
+          },
+          "groupName": {
+            "description": "The name of the control group, which specifies the domain or physical context of the messages. May be null if no translation is available",
+            "type": "string",
+            "example": "Brakes check up",
+            "nullable": true
+          },
+          "publishedRecommendedCustomerAction": {
+            "description": "The localized action the user is recommended to take. May be null if no translation is available",
+            "type": "string",
+            "example": "Call road-side assistance",
+            "nullable": true
+          },
+          "colorStatus": {
+            "$ref": "#/components/schemas/ColorStatus"
+          },
+          "checkControls": {
+            "description": "A list of check controls ordered by urgency, then mileage",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckControl"
+            }
+          }
+        }
+      },
+      "CheckControlSet": {
+        "description": "The complete set of check control information at a specific time",
+        "type": "object",
+        "properties": {
+          "mileage": {
+            "format": "int32",
+            "description": "The mileage of the vehicle at the time of the KEY_READ or the latest demand from VEHICLE_OTA. Distance unit = km",
+            "type": "integer",
+            "example": 18000
+          },
+          "createdAt": {
+            "format": "date-time",
+            "description": "The ISO-8601 timestamp at which the set of check control information was evaluated in the backend",
+            "type": "string",
+            "example": "2022-03-10T16:15:50.000Z"
+          },
+          "readInDate": {
+            "format": "date-time",
+            "description": "In case of a KEY_READ, the ISO-8601 timestamp at which the key read was performed",
+            "type": "string",
+            "example": "2022-03-10T16:15:50.000Z"
+          },
+          "source": {
+            "$ref": "#/components/schemas/Source"
+          },
+          "activeCheckControlGroups": {
+            "description": "List of active check controls grouped by event categories (except for source KEY_READ, for which the categories are not known)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckControlGroup"
+            }
+          },
+          "historizedCheckControls": {
+            "description": "List of historized check controls",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckControl"
+            }
+          }
+        }
+      },
+      "CheckControlSetListResponse": {
+        "description": "A response containing check controls from all requested sources. Check control messages are displayed in historized context and as active items",
+        "type": "object",
+        "properties": {
+          "checkControlSets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckControlSet"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        },
+        "example": {
+          "checkControlSets": [
+            {
+              "activeCheckControlGroups": [
+                {
+                  "checkControls": [
+                    {
+                      "identifier": "00400",
+                      "message": "long CCM for 9500400",
+                      "mileage": 40863,
+                      "occurredAt": "2023-07-03T09:28:32.000Z",
+                      "occurrences": 2,
+                      "title": "short CCM for 9500400"
+                    }
+                  ],
+                  "colorStatus": "YELLOW",
+                  "eventIdentifier": "CcmEngineNonUrgent",
+                  "groupName": "group name for event identifier CcmEngineNonUrgent",
+                  "publishedRecommendedCustomerAction": "recommended customer action for SCHEDULE_APPOINTMENT",
+                  "recommendedCustomerAction": "SCHEDULE_APPOINTMENT",
+                  "urgency": 80
+                }
+              ],
+              "createdAt": "2023-07-03T09:28:34.109Z",
+              "historizedCheckControls": [
+                {
+                  "identifier": "00400",
+                  "message": "long CCM for 9500400",
+                  "mileage": 40863,
+                  "occurredAt": "2023-07-03T09:28:32.000Z",
+                  "occurrences": 2,
+                  "title": "short CCM for 9500400"
+                },
+                {
+                  "identifier": "02421",
+                  "message": "long CCM for 9502421",
+                  "mileage": 40856,
+                  "occurredAt": "2023-07-03T09:28:33.288Z",
+                  "occurrences": 1,
+                  "title": "short CCM for 9502421"
+                }
+              ],
+              "mileage": 40913,
+              "source": "VEHICLE_OTA"
+            }
+          ],
+          "errors": []
+        }
+      },
+      "ColorStatus": {
+        "description": "The urgency as color. Always RED for active check controls if no urgency is provided",
+        "enum": [
+          "RED_ALERT",
+          "RED",
+          "YELLOW",
+          "GREY",
+          "UNKNOWN"
+        ],
+        "type": "string",
+        "example": "RED"
+      },
+      "ErrorResponse": {
+        "description": "The error response provides details for an error that occurred in processing a request.",
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "description": "The event identifier encodes the service and the location of the error.",
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "description": "The type is a short name for the error and is more expressive than the event identifier.",
+            "type": "string",
+            "nullable": true
+          },
+          "message": {
+            "description": "The error message describes the cause of the error.",
+            "type": "string",
+            "nullable": true
+          },
+          "errorCode": {
+            "format": "int32",
+            "description": "The error code of a backend request gives information about the cause of this error.",
+            "type": "integer",
+            "nullable": true
+          },
+          "cavorsRequestId": {
+            "description": "The CaVORS request identifier is unique for a request to CaVORS services.",
+            "type": "string",
+            "nullable": true
+          },
+          "cavorsSessionId": {
+            "description": "The CaVORS session identifier is shared by all requests of a user session.",
+            "type": "string",
+            "nullable": true
+          },
+          "parameters": {
+            "description": "The parameters provide additional information about the error.",
+            "type": "object",
+            "additionalProperties": {},
+            "nullable": true
+          }
+        }
+      },
+      "ErrorsResponse": {
+        "description": "Error information returned if the HTTP response status code >= 400",
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "format": "int32",
+            "description": "The status code is the HTTP code of the response.",
+            "type": "integer",
+            "nullable": true
+          },
+          "reasonPhrase": {
+            "description": "The reason phrase is the short description of the HTTP code.",
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "description": "The errors list contains all errors that occurred in processing the request.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "nullable": true
+          },
+          "traceId": {
+            "description": "The trace identifier can be used to analyze the error.",
+            "type": "string",
+            "nullable": true,
+            "deprecated": true
+          },
+          "message": {
+            "description": "The message explains the reason for the error.",
+            "type": "string",
+            "nullable": true,
+            "deprecated": true
+          },
+          "errorCode": {
+            "format": "int32",
+            "description": "The error code of a backend request gives information about the cause of this error.",
+            "type": "integer",
+            "nullable": true,
+            "deprecated": true
+          }
+        }
+      },
+      "ServiceDemand": {
+        "description": "Service demand for check control messages",
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "The type of the service demand.",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceDemandType"
+              }
+            ]
+          },
+          "statusColor": {
+            "description": "The overall color status for the service demand.",
+            "enum": [
+              "GREY",
+              "YELLOW",
+              "RED"
+            ],
+            "type": "string",
+            "example": "RED"
+          },
+          "status": {
+            "description": "The overall status of the service demand.",
+            "enum": [
+              "OVERDUE",
+              "PENDING",
+              "OK"
+            ],
+            "type": "string",
+            "example": "OVERDUE"
+          },
+          "title": {
+            "description": "The service demands title.",
+            "type": "string",
+            "example": "Check Control message"
+          },
+          "items": {
+            "description": "The service demand items.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceDemandItem"
+            }
+          }
+        }
+      },
+      "ServiceDemandColorStatus": {
+        "description": "The color status.",
+        "enum": [
+          "RED",
+          "YELLOW",
+          "GREY"
+        ],
+        "type": "string",
+        "example": "RED"
+      },
+      "ServiceDemandItem": {
+        "description": "A service demand item",
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "The overall status color of the service demand.",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceDemandType"
+              }
+            ]
+          },
+          "id": {
+            "description": "The id of the service demand item",
+            "type": "string",
+            "example": "00987"
+          },
+          "statusColor": {
+            "description": "The color status of the service demand item",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceDemandColorStatus"
+              }
+            ]
+          },
+          "status": {
+            "description": "The status of the service demand item",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceDemandStatus"
+              }
+            ]
+          },
+          "title": {
+            "description": "The status of the service demand item",
+            "type": "string",
+            "example": "00987"
+          },
+          "description": {
+            "description": "The status of the service demand item",
+            "type": "string",
+            "example": "Diagnostic mode active Press Start/Stop button to exit diagnostic mode."
+          }
+        }
+      },
+      "ServiceDemandStatus": {
+        "description": "Service demand status",
+        "enum": [
+          "OK",
+          "PENDING",
+          "OVERDUE"
+        ],
+        "type": "string",
+        "example": "OK"
+      },
+      "ServiceDemandType": {
+        "description": "Service demand type",
+        "enum": [
+          "CCM"
+        ],
+        "type": "string",
+        "example": "CCM"
+      },
+      "ServiceDemandsResponse": {
+        "description": "List of service demands for check control messages",
+        "type": "object",
+        "properties": {
+          "serviceDemands": {
+            "description": "Service demands",
+            "type": "array",
+            "items": {
+              "description": "Service demand for check control messages",
+              "type": "object",
+              "properties": {
+                "type": {
+                  "description": "The type of the service demand.",
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ServiceDemandType"
+                    }
+                  ]
+                },
+                "statusColor": {
+                  "description": "The overall color status for the service demand.",
+                  "enum": [
+                    "GREY",
+                    "YELLOW",
+                    "RED"
+                  ],
+                  "type": "string",
+                  "example": "RED"
+                },
+                "status": {
+                  "description": "The overall status of the service demand.",
+                  "enum": [
+                    "OVERDUE",
+                    "PENDING",
+                    "OK"
+                  ],
+                  "type": "string",
+                  "example": "OVERDUE"
+                },
+                "title": {
+                  "description": "The service demands title.",
+                  "type": "string",
+                  "example": "Check Control message"
+                },
+                "items": {
+                  "description": "The service demand items.",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceDemandItem"
+                  }
+                }
+              }
+            }
+          },
+          "errors": {
+            "description": "All errors that occurred while processing this request",
+            "type": "array",
+            "items": {
+              "description": "The error response provides details for an error that occurred in processing a request.",
+              "type": "object",
+              "properties": {
+                "eventId": {
+                  "description": "The event identifier encodes the service and the location of the error.",
+                  "type": "string",
+                  "nullable": true
+                },
+                "type": {
+                  "description": "The type is a short name for the error and is more expressive than the event identifier.",
+                  "type": "string",
+                  "nullable": true
+                },
+                "message": {
+                  "description": "The error message describes the cause of the error.",
+                  "type": "string",
+                  "nullable": true
+                },
+                "errorCode": {
+                  "format": "int32",
+                  "description": "The error code of a backend request gives information about the cause of this error.",
+                  "type": "integer",
+                  "nullable": true
+                },
+                "cavorsRequestId": {
+                  "description": "The CaVORS request identifier is unique for a request to CaVORS services.",
+                  "type": "string",
+                  "nullable": true
+                },
+                "cavorsSessionId": {
+                  "description": "The CaVORS session identifier is shared by all requests of a user session.",
+                  "type": "string",
+                  "nullable": true
+                },
+                "parameters": {
+                  "description": "The parameters provide additional information about the error.",
+                  "type": "object",
+                  "additionalProperties": {},
+                  "nullable": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "Source": {
+        "description": "The data source of the set of check control information",
+        "enum": [
+          "VEHICLE_OTA",
+          "KEY_READ"
+        ],
+        "type": "string",
+        "example": "KEY_READ"
+      }
+    },
+    "securitySchemes": {
+      "machine_token": {
+        "type": "http",
+        "description": "Authentication with a machine-to-machine (M2M) access token.",
+        "scheme": "bearer",
+        "bearerFormat": "The machine-to-machine access token can be retrieved from auth(-i).bg.net using a client identifier and a client secret. The client identifier needs to be registered for this endpoint as part of setting up the interface contract."
+      },
+      "wen_cookie": {
+        "type": "apiKey",
+        "description": "Authentication with a cookie issued by WebEAM.Next (WEN). The cookie is named 'wen' in production environments and 'weni' in development environments.",
+        "name": "wen",
+        "in": "cookie"
+      },
+      "wen_token": {
+        "type": "http",
+        "description": "Authentication with an OIDC access token issued by WebEAM.Next (WEN).",
+        "scheme": "bearer",
+        "bearerFormat": "The OIDC access token issued by WEN."
+      },
+      "auth_type": {
+        "type": "apiKey",
+        "description": "The authentication type that distinguishes which authentication information is provided. Use the value 'WEN_TOKEN' when authenticating with the OIDC access token issued by WebEAM.Next (WEN) and the value 'WEN_COOKIE' when authenticating with the cookie issued by WEN.",
+        "name": "AuthType",
+        "in": "header"
+      },
+      "auth_type_optional": {
+        "type": "apiKey",
+        "description": "The authentication type that distinguishes which authentication information is provided. Use the value 'WEN_TOKEN' when authenticating with the OIDC access token issued by WebEAM.Next (WEN) and the value 'WEN_COOKIE' when authenticating with the cookie issued by WEN. Depending on the endpoint this field is required.",
+        "name": "AuthType",
+        "in": "header"
+      },
+      "cssl_jwt": {
+        "type": "http",
+        "description": "Authentication with a JWT issued by CSSL.",
+        "scheme": "bearer",
+        "bearerFormat": "The JWT issued by CSSL."
+      },
+      "auth_session": {
+        "type": "apiKey",
+        "description": "The AOS session identifier is issued for B2I authentication when using applications started from the AOS portal.",
+        "name": "Auth-Session",
+        "in": "header"
+      },
+      "auth_app_id": {
+        "type": "apiKey",
+        "description": "The application identifier of the requesting application. In the case of B2I authentication, when using an application started from the AOS portal, this identifier is specific to AOS. In all other cases, this identifier is typically registered with this endpoint as part of setting up the interface contract.",
+        "name": "Auth-App-Id",
+        "in": "header"
+      },
+      "ilean_basic": {
+        "type": "http",
+        "description": "Authentication for ILEAN via username and password. The credentials are provided as Base64-encoded string similar to Basic authentication.",
+        "scheme": "basic"
+      },
+      "auth_brands": {
+        "type": "apiKey",
+        "description": "The brands that should be assumed for the B2E user. This is relevant for B2E authentication.",
+        "name": "Auth-Brands",
+        "in": "header"
+      },
+      "auth_country": {
+        "type": "apiKey",
+        "description": "The country that should be assumed for the B2E user. This is relevant for B2E authentication.",
+        "name": "Auth-Country",
+        "in": "header"
+      },
+      "auth_dist_partner": {
+        "type": "apiKey",
+        "description": "The distribution partner number of the dealer. This is relevant for B2D authentication.",
+        "name": "Auth-Dist-Partner",
+        "in": "header"
+      },
+      "auth_outlet": {
+        "type": "apiKey",
+        "description": "The outlet number of the dealer. This is relevant for B2D authentication.",
+        "name": "Auth-Outlet",
+        "in": "header"
+      },
+      "auth_buno": {
+        "type": "apiKey",
+        "description": "The warranty dealer partner number of the dealer. This is relevant for B2D and M2M-B2D authentication. If the warranty dealer number is provided, no distribution partner number and no outlet number need to be provided.",
+        "name": "Auth-Buno",
+        "in": "header"
+      },
+      "auth_scheme": {
+        "type": "apiKey",
+        "description": "The authentication scheme specifies which authentication information needs to be provided and how that information is checked.",
+        "name": "AuthScheme",
+        "in": "header"
+      },
+      "auth_basic": {
+        "type": "http",
+        "description": "Authentication via username and password where the credentials are provided as Base64-encoded string. The username and password need to be registered for this endpoint as part of setting up the interface contract.",
+        "scheme": "basic"
+      },
+      "auth_m2m_b2i_oid": {
+        "type": "apiKey",
+        "description": "The B2I organization identifier relates a request without user context to that B2I organization. This is relevant for M2M-B2I authentication.",
+        "name": "auth-m2m-b2i-oid",
+        "in": "header"
+      }
+    }
+  }
+}
