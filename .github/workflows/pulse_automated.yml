@@ -174,7 +174,7 @@ jobs:
               if .servers then
                 .servers[] | 
                 select(.description | ascii_downcase | contains($market | ascii_downcase)) and 
-                      (.description | ascii_downcase | contains($environment) | ascii_downcase))) | .url
+                      (.description | ascii_downcase | contains($environment) | ascii_downcase)) | .url
               else
                 empty
               end' "openapi_files/$file")
@@ -196,7 +196,7 @@ jobs:
                 if .servers then
                   .servers[] | 
                   select((.url | ascii_downcase | contains($market | ascii_downcase)) and 
-                         (.url | ascii_downcase | contains($environment) | ascii_downcase))) | .url
+                         (.url | ascii_downcase | contains($environment) | ascii_downcase)) | .url
                 else
                   empty
                 end' "openapi_files/$file")
