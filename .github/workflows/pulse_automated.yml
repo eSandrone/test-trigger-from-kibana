@@ -161,9 +161,11 @@ jobs:
             market="${{ github.event.inputs.market }}"
             environment="${{ github.event.inputs.environment }}"
             network="${{ github.event.inputs.network }}"
+            echo "$market $environment $network"
 
             # Cerca il server nel file OpenAPI basato su market, environment e network
-            server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
+            # server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
+            server=$(jq -r --arg market "$market" --arg environment "$environment" '
               # if .servers then
               #   .servers[] | 
               #   select((.description | contains($market)) and 
@@ -184,7 +186,8 @@ jobs:
               echo "No server found from description, trying to infer from URL for $file"
 
               # Se la descrizione non è utile, cerca il server basandoti sull'URL
-              server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
+              # server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
+              server=$(jq -r --arg market "$market" --arg environment "$environment" '
                 # if .servers then
                 #   .servers[] | 
                 #   select((.url | contains($market | ascii_downcase)) and 
