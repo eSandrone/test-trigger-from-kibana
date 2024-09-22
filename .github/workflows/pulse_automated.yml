@@ -173,7 +173,7 @@ jobs:
               #          (.description | ascii_downcase | contains($network) | ascii_downcase)) | .url
               if .servers then
                 .servers[] | 
-                select(.description | ascii_downcase | contains($market | ascii_downcase)) and 
+                select((.description | ascii_downcase | contains($market | ascii_downcase)) and 
                       (.description | ascii_downcase | contains($environment) | ascii_downcase)) | .url
               else
                 empty
