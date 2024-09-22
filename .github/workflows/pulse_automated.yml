@@ -17,6 +17,11 @@ on:
      required: false
      type: string
      default: ""
+    schema_url:
+     description: 'Schema Url (for online Swagger documentation, raw link)'
+     required: false
+     type: string
+     default: ""
     environment:
      description: 'The environment toward which to run tests'
      required: true
@@ -39,11 +44,6 @@ on:
      options:
        - INTRANET
        - INTERNET
-    schema_url:
-     description: 'Schema Url (for online Swagger documentation, raw link)'
-     required: false
-     type: string
-     default: ""
       
 jobs:     
   plse:
