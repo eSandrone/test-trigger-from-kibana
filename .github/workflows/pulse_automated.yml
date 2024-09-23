@@ -293,15 +293,21 @@ jobs:
         id: validateBaseUrl
         run: | 
          matrix=${{ steps.create-matrix.outputs.finalMatrix }}
-         for row in $(echo "$matrix" | jq -r '.include[] | @base64'); do
-           _jq() {
-               echo "${row}" | base64 --decode | jq -r "${1}"
-           }
+         echo "$matrix" | jq -c '.include[]' | while read -r item; do
+            path=$(echo "$item" | jq -r '.path')
+            server=$(echo "$item" | jq -r '.server')
         
-           # Stampa il contenuto del path e server
-           echo "Path: $(_jq '.path')"
-           echo "Server: $(_jq '.server')"
-           echo ""
+            # Stampa il contenuto del path e server
+            echo "Path: $path"
+            echo "Server: $server"
+            echo ""
+        
+            # Controllo se il file esiste
+            if [ -f "$path" ]; then
+                echo "File $path trovato."
+            else
+                echo "Errore: File $path non trovato."
+            fi
          done
          # if [[ "${{ inputs.schema_url }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
          #   echo "Getting base and schema...scenario 1"
