@@ -237,14 +237,14 @@ jobs:
                 if [[ "$extension" == "json" ]]; then
                   server=$(jq -r --arg network "$network" '
                     if .servers then
-                      .servers[] | select(.url | tostring | contains($network)) | .url | first
+                      .servers[] | select(.url | tostring | contains($network)) | .url
                     else
                       empty
                     end' "openapi_files/$file")
                 elif [[ "$extension" == "yaml" || "$extension" == "yml" ]]; then
                   server=$(yq -r --arg network "$network" '
                     if .servers then
-                      .servers[] | select(.url | tostring | contains($network)) | .url | first
+                      .servers[] | select(.url | tostring | contains($network)) | .url
                     else
                       empty
                     end' "openapi_files/$file")
