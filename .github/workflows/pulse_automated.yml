@@ -266,6 +266,7 @@ jobs:
               
               file_path=$(realpath "openapi_files/$file")
               results_json+='{"path": $path, "server": $server},'
+              echo "OK"
             done
           else
             echo "Selected server for $file: ${{ github.event.inputs.base_url }}"
