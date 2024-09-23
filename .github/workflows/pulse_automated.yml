@@ -138,6 +138,7 @@ jobs:
           fi
 
       - name: Generate file list from openapi_files and associate with server
+        id: create-matrix
         run: |
           # Initialise an empty array to save JSON data
           results_json='{"include":['
@@ -277,6 +278,7 @@ jobs:
           finalMatrix="${results_json%,}"
           finalMatrix+=']}'
           echo "$finalMatrix"
+          echo "::set-output name=finalMatrix::$finalMatrix"
           echo "$finalMatrix" > openapi_results.json
           echo "Saved JSON results to openapi_results.json"
 
@@ -287,35 +289,46 @@ jobs:
           path: openapi_results.json
 
 
-      # - name: ValidateBaseUrl
-      #   id: validateBaseUrl
-      #   run: | 
-      #    if [[ "${{ inputs.schema_url }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
-      #      echo "Getting base and schema...scenario 1"
-      #      base_urls=$(curl -X 'POST' "https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=${{ inputs.base_url }}&schema_url=${{ inputs.schema_url }}" -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -d '')
-      #      echo $base_urls
-      #      base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
-      #      echo $base_url
-      #      echo "::set-output name=base_url::$base_url"
-      #    elif [[ "${{ inputs.schema_file }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
-      #      echo "Getting base and schema...scenario 2"
-      #      curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/schema_url/${{ inputs.schema_file }}
-      #      ls
-      #      base_urls=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=${{ inputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@${{ inputs.schema_file }};type=application/json')
-      #      echo $base_urls
-      #      base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
-      #      echo $base_url
-      #      echo "::set-output name=base_url::$base_url"
-      #    else
-      #      echo "Getting base and schema...scenario 3"
-      #      curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/schema_url/check_control_messages.json
-      #      ls
-      #      base_urls=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=https://k-b-p-w.bg.n/openapi/kai/' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@check_control_messages.json;type=application/json')
-      #      echo $base_urls
-      #      base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
-      #      echo $base_url
-      #      echo "::set-output name=base_url::$base_url"
-      #    fi
+      - name: ValidateBaseUrl
+        id: validateBaseUrl
+        run: | 
+         matrix=${{ steps.create-matrix.outputs.finalMatrix }}
+         for row in $(echo "$matrix" | jq -r '.include[] | @base64'); do
+           _jq() {
+               echo "${row}" | base64 --decode | jq -r "${1}"
+           }
+        
+           # Stampa il contenuto del path e server
+           echo "Path: $(_jq '.path')"
+           echo "Server: $(_jq '.server')"
+           echo ""
+         done
+         # if [[ "${{ inputs.schema_url }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
+         #   echo "Getting base and schema...scenario 1"
+         #   base_urls=$(curl -X 'POST' "https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=${{ inputs.base_url }}&schema_url=${{ inputs.schema_url }}" -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -d '')
+         #   echo $base_urls
+         #   base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
+         #   echo $base_url
+         #   echo "::set-output name=base_url::$base_url"
+         # elif [[ "${{ inputs.schema_file }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
+         #   echo "Getting base and schema...scenario 2"
+         #   curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/schema_url/${{ inputs.schema_file }}
+         #   ls
+         #   base_urls=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=${{ inputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@${{ inputs.schema_file }};type=application/json')
+         #   echo $base_urls
+         #   base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
+         #   echo $base_url
+         #   echo "::set-output name=base_url::$base_url"
+         # else
+         #   echo "Getting base and schema...scenario 3"
+         #   curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/schema_url/check_control_messages.json
+         #   ls
+         #   base_urls=$(curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/validateBaseUrl?base_url=https://k-b-p-w.bg.n/openapi/kai/' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'upload_schema_file=@check_control_messages.json;type=application/json')
+         #   echo $base_urls
+         #   base_url=$(echo "$base_urls" | jq -r '.extracted_base_urls[] | select(.status == "ok") | .url')
+         #   echo $base_url
+         #   echo "::set-output name=base_url::$base_url"
+         # fi
          
          
       # - name: Validate schema file
