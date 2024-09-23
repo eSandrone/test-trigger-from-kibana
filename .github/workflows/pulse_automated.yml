@@ -265,14 +265,14 @@ jobs:
               echo "Selected server for $file: $server"
               
               file_path=$(realpath "openapi_files/$file")
-              results_json+='{"path": $path, "server": $server},'
+              results_json+='{"path": $file_path, "server": $server},'
               echo "OK"
             done
           else
             echo "Selected server for $file: ${{ github.event.inputs.base_url }}"
             file=$(ls openapi_files)
             file_path=$(realpath "openapi_files/$file")
-            results_json+='{"path": $path, "server": $server},'
+            results_json+='{"path": $file_path, "server": ${{ github.event.inputs.base_url }}},'
           fi
           finalMatrix="${results_json%,}"
           finalMatrix+=']}'
