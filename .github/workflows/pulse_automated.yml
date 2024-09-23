@@ -323,7 +323,7 @@ jobs:
          
       - name: Get data sample ad upload it
         run: |
-          matrix='${{ steps.create-matrix.outputs.openapi_list }}'
+          matrix='${{ steps.validate.outputs.execution_list }}'
           # cd /home/ec2-user
           
           for item in $(echo "$matrix" | jq -c '.include[]'); do 
