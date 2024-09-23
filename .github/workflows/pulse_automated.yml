@@ -263,18 +263,17 @@ jobs:
               fi
             
               echo "Selected server for $file: $server"
-            
-              # Aggiungi i dati nel formato JSON
+              
               file_path=$(realpath "openapi_files/$file")
               results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
             done
           else
+            echo "Selected server for $file: ${{ github.event.inputs.base_url }}"
             file=$(ls openapi_files)
             file_path=$(realpath "openapi_files/$file")
             results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "${{ github.event.inputs.base_url }}" '. += [{"path": $path, "server": $server}]')
           fi
           
-          # Salva il JSON finale su un file
           echo "$results_json" > openapi_results.json
           echo "Saved JSON results to openapi_results.json"
 
