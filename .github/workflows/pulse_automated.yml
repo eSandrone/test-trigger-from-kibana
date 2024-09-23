@@ -292,15 +292,15 @@ jobs:
       - name: ValidateBaseUrl
         id: validateBaseUrl
         run: | 
-         matrix=${{ steps.create-matrix.outputs.finalMatrix }}
-         echo "$matrix" | jq -c '.include[]' | while read -r item; do
-            path=$(echo "$item" | jq -r '.path' | tr -d '[:space:]')
-            server=$(echo "$item" | jq -r '.server' | tr -d '[:space:]')
-        
-            # Stampa il contenuto del path e server
-            echo "Path: $path"
-            echo "Server: $server"
-            echo ""
+         matrix='${{ steps.create-matrix.outputs.finalMatrix }}'
+         for item in $(echo "$matrix" | jq -c '.include[]'); do
+           path=$(echo "$item" | jq -r '.path')
+           server=$(echo "$item" | jq -r '.server')
+           
+           # Stampa il contenuto del path e server
+           echo "Path: $path"
+           echo "Server: $server"
+           echo ""
          done
          # if [[ "${{ inputs.schema_url }}" != "" && "${{ inputs.base_url }}" != "" ]]; then
          #   echo "Getting base and schema...scenario 1"
