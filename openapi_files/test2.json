@@ -1,0 +1,21 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "tests API",
+    "description": "",
+    "version": "3.0.3-bd104c428c"
+  },
+  "servers": [
+    {
+      "url": "https://test.bg.net",
+      "description": "MAIN SERVER"
+    },
+    {
+      "url": "https://test.bg.com",
+      "description": "MAIN SERVER"
+    }
+  ],
+  "tags": [],
+  "paths": {},
+  "components": {}
+}
