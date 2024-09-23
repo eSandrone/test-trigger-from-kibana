@@ -140,7 +140,7 @@ jobs:
       - name: Generate file list from openapi_files and associate with server
         run: |
           # Initialise an empty array to save JSON data
-          results_json="[]"
+          results_json='{"include":['
           
           if [ -z "${{ github.event.inputs.base_url }}" ]; then
             echo "Generating list of files in openapi_files"
@@ -265,7 +265,7 @@ jobs:
               echo "Selected server for $file: $server"
               
               file_path=$(realpath "openapi_files/$file")
-              results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
+              results_json+='{"path": $path, "server": $server},')
             done
           else
             echo "Selected server for $file: ${{ github.event.inputs.base_url }}"
@@ -273,8 +273,10 @@ jobs:
             file_path=$(realpath "openapi_files/$file")
             results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "${{ github.event.inputs.base_url }}" '. += [{"path": $path, "server": $server}]')
           fi
-          
-          echo "$results_json" > openapi_results.json
+          finalMatrix="${results_json%,}"
+          finalMatrix+=']}'
+          echo "$finalMatrix"
+          echo "$finalMatrix" > openapi_results.json
           echo "Saved JSON results to openapi_results.json"
 
       - name: Upload OpenAPI results as GitHub artifact
