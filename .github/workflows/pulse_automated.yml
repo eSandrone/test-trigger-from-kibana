@@ -139,6 +139,9 @@ jobs:
 
       - name: Generate file list from openapi_files and associate with server
         run: |
+          # Initialise an empty array to save JSON data
+          results_json="[]"
+          
           if [ -z "${{ github.event.inputs.base_url }}" ]; then
             echo "Generating list of files in openapi_files"
             file_list=$(ls openapi_files)
@@ -149,9 +152,6 @@ jobs:
             
             echo "Files found:"
             echo "$file_list"
-            
-            # Inizializza un array vuoto per salvare i dati JSON
-            results_json="[]"
             
             for file in $file_list; do
               echo "Processing $file..."
@@ -166,7 +166,7 @@ jobs:
               # Determina l'estensione del file
               extension="${file##*.}"
             
-              # Controllo se è un file JSON o YAML
+              # Checking whether it is a JSON or YAML file
               if [[ "$extension" == "json" ]]; then
                 # Usa jq per file JSON
                 server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
@@ -194,13 +194,13 @@ jobs:
                 exit 1
               fi
             
-              # Se il server è stato trovato tramite tutti i parametri
+              # If the server was found via all parameters
               if [ -n "$server" ]; then
                 echo "Server found for $file with full criteria: $server"
               else
                 echo "No server found with full criteria, transforming network..."
             
-                # Trasforma il valore della network in base al tipo (INTRANET -> .net, INTERNET -> .com)
+                # Transforms network value by type (INTRANET -> .net, INTERNET -> .com)
                 if [[ "$network" == "INTRANET" ]]; then
                   network=".net"
                 elif [[ "$network" == "INTERNET" ]]; then
@@ -209,7 +209,7 @@ jobs:
             
                 echo "Using transformed network: $network"
             
-                # Esegui un nuovo controllo con tutti i parametri includendo il network trasformato
+                # Run a new check with all parameters including the transformed network
                 if [[ "$extension" == "json" ]]; then
                   server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
                     if .servers then
@@ -232,11 +232,11 @@ jobs:
                     end' "openapi_files/$file")
                 fi
             
-                # Se ancora non trova il server, controlla solo la network
+                # If it still cannot find the server, just check the network
                 if [ -z "$server" ]; then
                   echo "No server found with full criteria after network transformation, trying with network only..."
             
-                  # Cerca il server basandoti solo sulla network (".net" o ".com")
+                  # Search for the server based only on the network ('.net' or '.com')
                   if [[ "$extension" == "json" ]]; then
                     server=$(jq -r --arg network "$network" '
                       if .servers then
