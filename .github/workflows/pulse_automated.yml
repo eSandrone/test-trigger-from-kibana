@@ -357,7 +357,7 @@ jobs:
             while [ "$progress_percent" -lt 100 ]; do
               # progress_response=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/fuzzer/progress?base_url=$base_url' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
               # progress_percent=$(echo "$progress_response" | jq -r '.progress_percent')
-              progress_percent=$progress_percent+50
+              let progress_percent=progress_percent+50
               echo "Progress percent: $progress_percent"
               sleep 5  
             done
