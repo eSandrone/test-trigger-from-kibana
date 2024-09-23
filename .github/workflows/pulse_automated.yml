@@ -1,4 +1,4 @@
-oname: plse automanted
+name: plse automanted
 on:
   workflow_dispatch:
    inputs:
