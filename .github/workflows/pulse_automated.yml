@@ -265,11 +265,11 @@ jobs:
               echo "Selected server for $file: $server"
             
               # Aggiungi i dati nel formato JSON
-              file=$(ls openapi_files)
               file_path=$(realpath "openapi_files/$file")
               results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
             done
           else
+            file=$(ls openapi_files)
             file_path=$(realpath "openapi_files/$file")
             results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "${{ github.event.inputs.base_url }}" '. += [{"path": $path, "server": $server}]')
           fi
