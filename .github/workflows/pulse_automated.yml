@@ -109,7 +109,7 @@ jobs:
             cd openapi_files
             for path in $matched_urls; do
               echo "Downloading $repository_name/$path"
-              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.github.com/$path"
+              # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$repository_name/$path"
             done
             cd ..
           else
@@ -125,7 +125,7 @@ jobs:
                   cd openapi_files
                   while read -r path; do
                     echo "Downloading $repository_name/$path"
-                    # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.github.com/$path"
+                    # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "https://raw.atc-github.azure.cloud.bmw/$repository_name/$path"
                   done <<< "$file_urls"
                   cd ..
                 else
@@ -312,7 +312,9 @@ jobs:
             # execution_id=$(echo "$validate_response" | jq -r '.execution_id' )
 
             base_url=$server
-            execution_id=$i++
+            execution_id=$i
+
+            i=$i+1
             
             results_json+='{"base_url": "'$base_url'", "execution_id": "'$execution_id'"},'
           done
@@ -339,61 +341,43 @@ jobs:
             #curl -X 'POST' 'https://c-i.bg.n/plse/api/schemas/uploadDataSamples?base_url=$base_url&execution_id=$execution_id' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'data_samples=@data_sample.json;type=application/json'
           done
          
-      # - name: Upload data sample
-      #   run: |
-      #    cd /home/ec2-user
-      #    curl -X 'POST' 'https://c-i.bg.n/plse/api/schemas/uploadDataSamples?base_url=${{ steps.validateBaseUrl.outputs.base_url }}&execution_id=${{ steps.validate.outputs.execution_id }}'   -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: multipart/form-data' -F 'data_samples=@data_sample.json;type=application/json'
-         
-      # - name: Start Fuzzer
-      #   run: |
-      #    #if [[ "${{ inputs.endpoint }}" != "" ]]; then
-      #     #echo "scenario 1"
-      #     #curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/start' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: application/json' -d '{"base_url": "${{ steps.validateBaseUrl.outputs.base_url }}","execution_id": "${{ steps.validate.outputs.execution_id }}","select_endpoints": ["${{ inputs.endpoint }}"], "auth_details": {"basic_username": "","basic_password": "","bearer_token": "","api_key_key": "","api_key_value": "","api_key_location": "header"},"file_name": "","used_data_samples_from_db": false}'
-      #    #else
-      #    echo "scenario 2"
-      #    curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/start' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: application/json' -d '{"base_url": "${{ steps.validateBaseUrl.outputs.base_url }}","execution_id": "${{ steps.validate.outputs.execution_id }}","select_endpoints": [""], "auth_details": {"basic_username": "","basic_password": "","bearer_token": "","api_key_key": "","api_key_value": "","api_key_location": "header"},"file_name": " data_sample.json","used_data_samples_from_db": false}'
-      #    #fi
-         
-      # - name: Follow the progress
-      #   run : |
-      #    progress_percent=0
-      #    while [ "$progress_percent" -lt 100 ]; do
-      #      progress_response=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/fuzzer/progress?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
-      #      progress_percent=$(echo "$progress_response" | jq -r '.progress_percent')
-      #      echo "Progress percent: $progress_percent"
-      #      sleep 5  
-      #    done
-      #    echo "Progress reached 100%. Task completed."
-         
-      # - name: Get results per endpoint
-      #   run: |
-      #    endpoint_response_full=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/results/combined/endpoints?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
-      #    echo "$endpoint_response_full" > "endpoint_plse.json"
-      #    ls
-      #    curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/python_scripts/plse/endpoint_plse.py
-      #    ls
-      #    python3 endpoint_plse.py ${{ github.run_id }}
-         
-      # - name: Get result per KPI
-      #   run: |
-      #    cd /home/ec2-user
-      #    timestamp=$(date +%Y%m%d_%H%M%S)
-      #    kpi_response_full=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/results/combined/kpis?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
-      #    kpi_response=$(echo "$kpi_response_full" | jq '.[1] | {"status_code_errors": .status_code_errors,"schema_errors": .schema_errors,"content_type_errors": .content_type_errors,"server_errors": .server_errors,"header_errors": .header_errors,"coverage_missing": .coverage.missing,"coverage_generated": .coverage.generated,"coverage_total": .coverage.total,"success_total": .success.total,"success_successful": .success.successful,"success_failed": .success.failed,"base_url": .base_url,"execution_id": .execution_id, "tag": "plse_kpi"}')
-      #    echo "Last execution result"
-      #    #echo "$kpi_response" > "output_$timestamp.json"
-         
-      # - name: Download PDF report
-      #   run: |
-      #    cd /home/ec2-user/single_reports
-      #    curl -X 'GET' 'https://c-i.bg.n/plse/api/results/downloadplseReport?base_url=${{ steps.validateBaseUrl.outputs.base_url }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -o plse_report.pdf
-      #    ls
-         
-      # - name: Download schema report
-      #   run: |
-      #    cd /home/ec2-user/single_reports
-      #    curl -X 'GET' 'https://c-i.bg.n/plse/api/results/downloadSchemaReport?base_url=${{ steps.validateBaseUrl.outputs.base_url }}&execution_id=${{ steps.validate.outputs.execution_id }}' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -o schema_report.pdf
-      #    ls
+      - name: Start Fuzzer, follow the progress and get results
+        run: |
+          matrix='${{ steps.validate.outputs.execution_list }}'
+          for item in $(echo "$matrix" | jq -c '.include[]'); do 
+            base_url=$(echo "$item" | jq -r '.base_url')
+            execution_id=$(echo "$item" | jq -r '.execution_id')
+            
+            # Print content
+            echo "Base URL: $base_url"
+            echo "Execution ID: $execution_id"
+
+            # curl -X 'POST' 'https://c-i.bg.n/plse/api/fuzzer/start' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -H 'Content-Type: application/json' -d '{"base_url": "$base_url","execution_id": "$execution_id","select_endpoints": [""], "auth_details": {"basic_username": "","basic_password": "","bearer_token": "","api_key_key": "","api_key_value": "","api_key_location": "header"},"file_name": " data_sample.json","used_data_samples_from_db": false}'
+            progress_percent=0
+            while [ "$progress_percent" -lt 100 ]; do
+              # progress_response=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/fuzzer/progress?base_url=$base_url' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+              # progress_percent=$(echo "$progress_response" | jq -r '.progress_percent')
+              progress_percent=$progress_percent+50
+              echo "Progress percent: $progress_percent"
+              sleep 5  
+            done
+            echo "Progress reached 100%. Task completed."
+
+            # endpoint_response_full=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/results/combined/endpoints?base_url=$base_url' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+            # echo "$endpoint_response_full" > "endpoint_plse.json"
+            # curl -H "Authorization: Bearer ${{ secrets.TOKEN_GITHUB }}" -H "Accept: application/vnd.github.raw" --remote-name --location https://raw.atc-github.azure.cloud.bmw/Service-and-Repairs/pip/main/python_scripts/plse/endpoint_plse.py
+            # python3 endpoint_plse.py ${{ github.run_id }}
+            
+            # timestamp=$(date +%Y%m%d_%H%M%S)
+            # kpi_response_full=$(curl -X 'GET' 'https://c-i.bg.n/plse/api/results/combined/kpis?base_url=$base_url' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}')
+            # kpi_response=$(echo "$kpi_response_full" | jq '.[1] | {"status_code_errors": .status_code_errors,"schema_errors": .schema_errors,"content_type_errors": .content_type_errors,"server_errors": .server_errors,"header_errors": .header_errors,"coverage_missing": .coverage.missing,"coverage_generated": .coverage.generated,"coverage_total": .coverage.total,"success_total": .success.total,"success_successful": .success.successful,"success_failed": .success.failed,"base_url": .base_url,"execution_id": .execution_id, "tag": "plse_kpi"}')
+            # echo "Last execution result"
+            # #echo "$kpi_response" > "output_$timestamp.json"
+            
+            # cd /home/ec2-user/single_reports
+            # curl -X 'GET' 'https://c-i.bg.n/plse/api/results/downloadplseReport?base_url=$base_url' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -o plse_report.pdf
+            # curl -X 'GET' 'https://c-i.bg.n/plse/api/results/downloadSchemaReport?base_url=$$base_url&execution_id=$execution_id' -H 'accept: application/json' -H 'X-API-KEY: ${{ steps.login.outputs.jwt_token }}' -o schema_report.pdf
+          done
        
       # - name: Upload PDF as artifact
       #   uses: actions/upload-artifact@v3.1.2
