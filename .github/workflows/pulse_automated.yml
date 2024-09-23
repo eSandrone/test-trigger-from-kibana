@@ -273,6 +273,7 @@ jobs:
             file=$(ls openapi_files)
             file_path=$(realpath "openapi_files/$file")
             results_json+='{"path": $path, "server": $server},'
+          fi
           finalMatrix="${results_json%,}"
           finalMatrix+=']}'
           echo "$finalMatrix"
