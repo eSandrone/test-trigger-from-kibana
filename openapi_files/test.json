@@ -7,72 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://test-int.bg.net",
-      "description": "EMEA-INT (Intranet)"
-    },
-    {
-      "url": "https://test-int.bg.com",
-      "description": "EMEA-INT (Internet)"
-    },
-    {
-      "url": "https://mtls.test-int.bg.com",
-      "description": "EMEA-INT (Internet, mTLS)"
-    },
-    {
-      "url": "https://test-qa.bg.net",
-      "description": "EMEA-QA (Intranet)"
-    },
-    {
-      "url": "https://test-qa.bg.com",
-      "description": "EMEA-QA (Internet)"
-    },
-    {
-      "url": "https://mtls.test-qa.bg.com",
-      "description": "EMEA-QA (Internet, mTLS)"
-    },
-    {
-      "url": "https://test-us-qa.bg.net",
-      "description": "US-QA (Intranet)"
-    },
-    {
-      "url": "https://test-us-qa.bg.com",
-      "description": "US-QA (Internet)"
-    },
-    {
-      "url": "https://test-cn-qa.bg.net",
-      "description": "CN-QA (Intranet)"
-    },
-    {
-      "url": "https://test-qa.bg.com.cn",
-      "description": "CN-QA (Internet)"
-    },
-    {
       "url": "https://test.bg.net",
-      "description": "EMEA-PROD (Intranet)"
+      "description": "MAIN SERVER"
     },
     {
       "url": "https://test.bg.com",
-      "description": "EMEA-PROD (Internet)"
-    },
-    {
-      "url": "https://mtls.test.bg.com",
-      "description": "EMEA-PROD (Internet, mTLS)"
-    },
-    {
-      "url": "https://test-us.bg.net",
-      "description": "US-PROD (Intranet)"
-    },
-    {
-      "url": "https://test-us.bg.com",
-      "description": "US-PROD (Internet)"
-    },
-    {
-      "url": "https://test-cn.bg.net",
-      "description": "CN-PROD (Intranet)"
-    },
-    {
-      "url": "https://test.bg.com.cn",
-      "description": "CN-PROD (Internet)"
+      "description": "MAIN SERVER"
     }
   ],
   "tags": [],
