@@ -81,6 +81,8 @@ jobs:
         if: ${{ github.event.inputs.schema_url != '' }}
         run: |
           echo "Download OpenAPI file from the link provided"
+          mkdir -p openapi_files
+          cd openapi_files
           # curl -H "Authorization: Bearer $TOKEN_GITHUB" -H "Accept: application/vnd.github.raw" --remote-name --location "${{ github.event.inputs.schema_url }}"  
 
       # Step 4: Se l'utente ha impostato fetch_all a true, scarica tutti i file nel JSON
@@ -137,134 +139,140 @@ jobs:
 
       - name: Generate file list from openapi_files and associate with server
         run: |
-          echo "Generating list of files in openapi_files"
-          file_list=$(ls openapi_files)
-          if [ -z "$file_list" ]; then
-            echo "No files found in openapi_files directory"
-            exit 1
-          fi
-          
-          echo "Files found:"
-          echo "$file_list"
-          
-          # Inizializza un array vuoto per salvare i dati JSON
-          results_json="[]"
-          
-          for file in $file_list; do
-            echo "Processing $file..."
-          
-            # Definizione delle variabili di input
-            market="${{ github.event.inputs.market }}"
-            environment="${{ github.event.inputs.environment }}"
-            network="${{ github.event.inputs.network }}"
-          
-            echo "Market: $market, Environment: $environment, Network: $network"
-          
-            # Determina l'estensione del file
-            extension="${file##*.}"
-          
-            # Controllo se è un file JSON o YAML
-            if [[ "$extension" == "json" ]]; then
-              # Usa jq per file JSON
-              server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-                if .servers then
-                  .servers[] | 
-                  select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-                         (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
-                         (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
-                else
-                  empty
-                end' "openapi_files/$file")
-            elif [[ "$extension" == "yaml" || "$extension" == "yml" ]]; then
-              # Usa yq per file YAML
-              server=$(yq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
-                if .servers then
-                  .servers[] | 
-                  select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
-                         (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
-                         (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
-                else
-                  empty
-                end' "openapi_files/$file")
-            else
-              echo "Unsupported file format for $file"
+          if [ -z "${{ github.event.inputs.base_url }}" ]; then
+            echo "Generating list of files in openapi_files"
+            file_list=$(ls openapi_files)
+            if [ -z "$file_list" ]; then
+              echo "No files found in openapi_files directory"
               exit 1
             fi
-          
-            # Se il server è stato trovato tramite tutti i parametri
-            if [ -n "$server" ]; then
-              echo "Server found for $file with full criteria: $server"
-            else
-              echo "No server found with full criteria, transforming network..."
-          
-              # Trasforma il valore della network in base al tipo (INTRANET -> .net, INTERNET -> .com)
-              if [[ "$network" == "INTRANET" ]]; then
-                network=".net"
-              elif [[ "$network" == "INTERNET" ]]; then
-                network=".com"
-              fi
-          
-              echo "Using transformed network: $network"
-          
-              # Esegui un nuovo controllo con tutti i parametri includendo il network trasformato
+            
+            echo "Files found:"
+            echo "$file_list"
+            
+            # Inizializza un array vuoto per salvare i dati JSON
+            results_json="[]"
+            
+            for file in $file_list; do
+              echo "Processing $file..."
+            
+              # Definizione delle variabili di input
+              market="${{ github.event.inputs.market }}"
+              environment="${{ github.event.inputs.environment }}"
+              network="${{ github.event.inputs.network }}"
+            
+              echo "Market: $market, Environment: $environment, Network: $network"
+            
+              # Determina l'estensione del file
+              extension="${file##*.}"
+            
+              # Controllo se è un file JSON o YAML
               if [[ "$extension" == "json" ]]; then
+                # Usa jq per file JSON
                 server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
                   if .servers then
                     .servers[] | 
-                    select((.url | tostring | contains($market | ascii_downcase)) and 
-                           (.url | tostring | contains($environment | ascii_downcase)) and 
-                           (.url | tostring | contains($network))) | .url
+                    select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
+                           (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
+                           (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
                   else
                     empty
                   end' "openapi_files/$file")
               elif [[ "$extension" == "yaml" || "$extension" == "yml" ]]; then
+                # Usa yq per file YAML
                 server=$(yq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
                   if .servers then
                     .servers[] | 
-                    select((.url | tostring | contains($market | ascii_downcase)) and 
-                           (.url | tostring | contains($environment | ascii_downcase)) and 
-                           (.url | tostring | contains($network))) | .url
+                    select((.description | tostring | ascii_downcase | contains($market | ascii_downcase)) and 
+                           (.description | tostring | ascii_downcase | contains($environment | ascii_downcase)) and 
+                           (.description | tostring | ascii_downcase | contains($network | ascii_downcase))) | .url
                   else
                     empty
                   end' "openapi_files/$file")
+              else
+                echo "Unsupported file format for $file"
+                exit 1
               fi
-          
-              # Se ancora non trova il server, controlla solo la network
-              if [ -z "$server" ]; then
-                echo "No server found with full criteria after network transformation, trying with network only..."
-          
-                # Cerca il server basandoti solo sulla network (".net" o ".com")
+            
+              # Se il server è stato trovato tramite tutti i parametri
+              if [ -n "$server" ]; then
+                echo "Server found for $file with full criteria: $server"
+              else
+                echo "No server found with full criteria, transforming network..."
+            
+                # Trasforma il valore della network in base al tipo (INTRANET -> .net, INTERNET -> .com)
+                if [[ "$network" == "INTRANET" ]]; then
+                  network=".net"
+                elif [[ "$network" == "INTERNET" ]]; then
+                  network=".com"
+                fi
+            
+                echo "Using transformed network: $network"
+            
+                # Esegui un nuovo controllo con tutti i parametri includendo il network trasformato
                 if [[ "$extension" == "json" ]]; then
-                  server=$(jq -r --arg network "$network" '
+                  server=$(jq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
                     if .servers then
-                      .servers[] | select(.url | tostring | contains($network)) | .url
+                      .servers[] | 
+                      select((.url | tostring | contains($market | ascii_downcase)) and 
+                             (.url | tostring | contains($environment | ascii_downcase)) and 
+                             (.url | tostring | contains($network))) | .url
                     else
                       empty
                     end' "openapi_files/$file")
                 elif [[ "$extension" == "yaml" || "$extension" == "yml" ]]; then
-                  server=$(yq -r --arg network "$network" '
+                  server=$(yq -r --arg market "$market" --arg environment "$environment" --arg network "$network" '
                     if .servers then
-                      .servers[] | select(.url | tostring | contains($network)) | .url
+                      .servers[] | 
+                      select((.url | tostring | contains($market | ascii_downcase)) and 
+                             (.url | tostring | contains($environment | ascii_downcase)) and 
+                             (.url | tostring | contains($network))) | .url
                     else
                       empty
                     end' "openapi_files/$file")
                 fi
-          
-                if [ -n "$server" ]; then
-                  echo "Server found with network only for $file: $server"
-                else
-                  echo "Error: No server found for $file with the provided criteria"
-                  exit 1
+            
+                # Se ancora non trova il server, controlla solo la network
+                if [ -z "$server" ]; then
+                  echo "No server found with full criteria after network transformation, trying with network only..."
+            
+                  # Cerca il server basandoti solo sulla network (".net" o ".com")
+                  if [[ "$extension" == "json" ]]; then
+                    server=$(jq -r --arg network "$network" '
+                      if .servers then
+                        .servers[] | select(.url | tostring | contains($network)) | .url
+                      else
+                        empty
+                      end' "openapi_files/$file")
+                  elif [[ "$extension" == "yaml" || "$extension" == "yml" ]]; then
+                    server=$(yq -r --arg network "$network" '
+                      if .servers then
+                        .servers[] | select(.url | tostring | contains($network)) | .url
+                      else
+                        empty
+                      end' "openapi_files/$file")
+                  fi
+            
+                  if [ -n "$server" ]; then
+                    echo "Server found with network only for $file: $server"
+                  else
+                    echo "Error: No server found for $file with the provided criteria"
+                    exit 1
+                  fi
                 fi
               fi
-            fi
-          
-            echo "Selected server for $file: $server"
-          
-            # Aggiungi i dati nel formato JSON
+            
+              echo "Selected server for $file: $server"
+            
+              # Aggiungi i dati nel formato JSON
+              file=$(ls openapi_files)
+              file_path=$(realpath "openapi_files/$file")
+              results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
+            done
+          else
             file_path=$(realpath "openapi_files/$file")
-            results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "$server" '. += [{"path": $path, "server": $server}]')
-          done
+            results_json=$(echo "$results_json" | jq --arg path "$file_path" --arg server "${{ github.event.inputs.base_url }}" '. += [{"path": $path, "server": $server}]')
+          fi
           
           # Salva il JSON finale su un file
           echo "$results_json" > openapi_results.json
