@@ -312,7 +312,7 @@ jobs:
             # execution_id=$(echo "$validate_response" | jq -r '.execution_id' )
 
             base_url=$server
-            execution_id=i++
+            execution_id=$i++
             
             results_json+='{"base_url": "'$base_url'", "execution_id": "'$execution_id'"},'
           done
@@ -324,7 +324,7 @@ jobs:
       - name: Get data sample ad upload it
         run: |
           matrix='${{ steps.create-matrix.outputs.openapi_list }}'
-          cd /home/ec2-user
+          # cd /home/ec2-user
           
           for item in $(echo "$matrix" | jq -c '.include[]'); do 
             base_url=$(echo "$item" | jq -r '.base_url')
