@@ -1,0 +1,133 @@
+name: Example
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: eu-central-1
+  AWS_EC2_ID: ${{ secrets.AWS_EC2_ID }}
+  AWS_S3_URI: ${{ secrets.AWS_S3_URI }}
+  YUBIKEY_SEED: ${{ secrets.YUBIKEY_SEED }}
+  JIRA_USER: ${{ secrets.JIRA_USER }}
+  JIRA_PWD: ${{ secrets.JIRA_PWD }}
+
+jobs:
+  start-ec2-instance:
+    name: Start EC2 Instance
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+ 
+      - name: Configure AWS CLI
+        id: config
+        run: |
+          aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" && aws configure set aws_secret_access_key "$AWS_ACCESS_KEY_SECRET" && aws configure set region "eu-central-1" && aws configure set output "json"
+
+      - name: Check EC2 state
+        id: ec2-state
+        run: |
+          instance_state=$(aws ec2 describe-instances --instance-ids $AWS_EC2_ID --query 'Reservations[*].Instances[0].State.Name' --output text)
+          echo "instance_state=$instance_state" >> $GITHUB_OUTPUT
+          echo $instance_state
+
+      - name: Start EC2 if stopped
+        if: steps.ec2-state.outputs.instance_state == 'stopped'
+        run: |
+          aws ec2 start-instances --instance-ids $AWS_EC2_ID
+          echo "Instance $AWS_EC2_ID started"
+
+      - name: Reboot EC2 if already running
+        if: steps.ec2-state.outputs.instance_state == 'running'
+        run: |
+          aws ec2 reboot-instances --instance-ids $AWS_EC2_ID
+          echo "Instance $AWS_EC2_ID rebooted"
+
+      - name: Status check
+        run: |
+          while :
+          do
+            instance_state=$(aws ec2 describe-instances --instance-ids $AWS_EC2_ID --query 'Reservations[*].Instances[0].State.Name' --output text)
+            printf -v date '%(%Y-%m-%d %H:%M:%S)T\n' -1
+            if [ "$instance_state" == "running" ]; then
+              echo "Instace $AWS_EC2_ID is up"
+              break
+            fi
+            echo "Instance $AWS_EC2_ID is starting up"
+            sleep 10
+          done
+          nc -vz -w10 10.3.54.57 5038
+          if [ $? -eq 0 ]; then
+              echo "Asterisk: Connection successful"
+          else
+              echo "Asterisk: Connection failed"
+              exit 1
+          fi
+
+  execute-tests:
+   runs-on: self-hosted
+   needs: start-ec2-instance
+   steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+ 
+      - name: Configure AWS CLI
+        id: config
+        run: |
+          aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID" && aws configure set aws_secret_access_key "$AWS_ACCESS_KEY_SECRET" && aws configure set region "eu-central-1" && aws configure set output "json"
+
+      - name: Start Yubikey service
+        run: |
+          cd ../../../../CounterService/
+          python3 src/main.py
+ 
+      - name: Create Test Execution in Jira
+        id: jira
+        run: |
+          issue_key=$(python3 ./python_scripts/jira_action_handler/jira_action_handler.py --user "$JIRA_USER" --pwd "$JIRA_PWD" --action "create_test_execution")
+          echo "issue_key=$issue_key" >> $GITHUB_OUTPUT
+          
+      - name: Build the Docker image and Execute Tests
+        id: docker
+        run: |
+          # printf -v date '%(%Y-%m-%d)T\n' -1
+          # docker build . --file Dockerfile --tag ccs-e2e-testing:$date --build-arg HTTP_PROXY="http://proxy.ccc-ng-1.eu-central-1.aws.cloud.bmw:8080" --build-arg HTTPS_PROXY="http://proxy.ccc-ng-1.eu-central-1.aws.cloud.bmw:8080" --build-arg NO_PROXY="169.254.169.254,169.254.170.2,/var/run/docker.sock,localhost,127.0.0.1,.muc,.aws.cloud.bmw,.azure.cloud.bmw,.bmw.corp,.bmwgroup.net,.amazonaws.com"
+          # docker run --network host --name CCS-TESTS ccs-e2e-testing:$date
+          docker pull 851725352133.dkr.ecr.eu-central-1.amazonaws.com/sip_client:2024-09-03
+          docker run --network host --name SIP-CLIENT 851725352133.dkr.ecr.eu-central-1.amazonaws.com/sip_client:2024-09-03
+          docker pull 851725352133.dkr.ecr.eu-central-1.amazonaws.com/ccs-e2e-testing:2024-09-04
+          docker run --network host --name CCS-TESTS 851725352133.dkr.ecr.eu-central-1.amazonaws.com/ccs-e2e-testing:2024-09-04
+
+      - name: Stop all Containersreport
+        if: always
+        run: |
+          docker stop CCS-TESTS
+          docker stop SIP-CLIENT
+          docker rm SIP-CLIENT
+
+      - name: Upload Report in JIRA
+        id: report
+        if: always
+        run: |
+          mkdir Report 
+          docker cp CCS-TESTS:/test/test-output/Report ./Report
+          docker stop CCS-TESTS
+          docker rm CCS-TESTS
+          zip -r report.zip Report
+          zip_path=$(realpath report.zip)
+          echo "zip_path=$zip_path" >> $GITHUB_OUTPUT
+          python3 ./python_scripts/jira_action_handler/jira_action_handler.py --user "$JIRA_USER" --pwd "$JIRA_PWD" --action "add_attachment" --issueKey "${{ steps.jira.outputs.issue_key }}" --attachmentPath "$zip_path"       
+      
+      - name: Upload Report as artifact
+        if: always
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ccs-report
+          path: ${{ steps.report.output.zip_path }}
+
+      - name: Stop EC2
+        if: always
+        run: |
+          aws ec2 stop-instances --instance-ids $AWS_EC2_ID
