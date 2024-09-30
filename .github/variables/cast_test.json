@@ -1,0 +1,26 @@
+{
+    "testifi": {
+      "supported-test-suites": {
+        "awp-us-market-qa": {
+          "name": "AWP QA US Market Tests",
+          "environment": "QA"
+        },
+        "awp-us-market-prod": {
+          "name": "AWP Prod US Market Tests",
+          "environment": "PROD"
+        },
+        "awp-smoke-tests": {
+          "name": "AWP Smoke Tests",
+          "environment": "QA"
+        },
+        "seam": {
+          "name": "SEAM Tests",
+          "environment": "QA"
+        },
+        "drehmoment": {
+          "name": "Drehmoment Tests",
+          "environment": "QA"
+        },
+      }
+    }
+}
