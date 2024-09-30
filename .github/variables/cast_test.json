@@ -20,7 +20,7 @@
         "dreht": {
           "name": "Dreh Tests",
           "environment": "QA"
-        },
+        }
       }
     }
 }
