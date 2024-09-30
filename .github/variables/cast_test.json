@@ -1,24 +1,24 @@
 {
-    "testifi": {
+    "test": {
       "supported-test-suites": {
-        "awp-us-market-qa": {
-          "name": "AWP QA US Market Tests",
+        "us-market-qa": {
+          "name": "QA US Market Tests",
           "environment": "QA"
         },
-        "awp-us-market-prod": {
-          "name": "AWP Prod US Market Tests",
+        "us-market-prod": {
+          "name": "Prod US Market Tests",
           "environment": "PROD"
         },
-        "awp-smoke-tests": {
-          "name": "AWP Smoke Tests",
+        "smoke-tests": {
+          "name": "Smoke Tests",
           "environment": "QA"
         },
-        "seam": {
-          "name": "SEAM Tests",
+        "se": {
+          "name": "SE Tests",
           "environment": "QA"
         },
-        "drehmoment": {
-          "name": "Drehmoment Tests",
+        "dreht": {
+          "name": "Dreh Tests",
           "environment": "QA"
         },
       }
