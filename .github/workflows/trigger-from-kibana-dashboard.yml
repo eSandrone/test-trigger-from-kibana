@@ -3,7 +3,7 @@ name: Trigger from Kibana dashboard
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [ test-from-pqd ]
+    types: [ trigger-from-pqd ]
 
 jobs:
   trigger-from-kibana-dashboard:
