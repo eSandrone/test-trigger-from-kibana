@@ -3,7 +3,7 @@ import sys
 import requests
 import re
 from requests.auth import HTTPBasicAuth
-from atlassian import Confluence
+# from atlassian import Confluence
 
 # DATA
 basic = HTTPBasicAuth(sys.argv[2], sys.argv[3])

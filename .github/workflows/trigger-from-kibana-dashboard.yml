@@ -21,5 +21,7 @@ jobs:
           echo ${{ github.event.client_payload.test_type }}
           echo ${{ github.event.client_payload.area }}
 
+          pip install requests
+
           matrix=$(python3 ./python_scripts/get_test_suites_from_type/get_test_suites_from_type.py ${{ github.event.client_payload.test_type }})
           echo $matrix
