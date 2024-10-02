@@ -6,25 +6,25 @@ from requests.auth import HTTPBasicAuth
 # from atlassian import Confluence
 
 # DATA
-basic = HTTPBasicAuth(sys.argv[2], sys.argv[3])
+# basic = HTTPBasicAuth(sys.argv[2], sys.argv[3])
 FILE_TO_BE_READ = './.github/variables/teams.json'
 global test_suites_json
 
-def get_data_from_confluence() -> str:
-    # Page with existing AWP version
-    url = 'https://atc.bmwgroup.net/confluence/rest/api/content/3307627892/history/0/macro/id/d0d2bb5b-45b6-4f55-ab68-1033a191f957'
-    # Make a GET request to the Confluence API
-    response = requests.get(url, auth=basic)
+# def get_data_from_confluence() -> str:
+#     # Page with existing AWP version
+#     url = 'https://atc.bmwgroup.net/confluence/rest/api/content/3307627892/history/0/macro/id/d0d2bb5b-45b6-4f55-ab68-1033a191f957'
+#     # Make a GET request to the Confluence API
+#     response = requests.get(url, auth=basic)
 
-    # If the request was successful, release and sprint are recovered
-    if response.status_code == 200:
-        page_content = response.json()
-        next_releases_index = [next_release.start() for next_release in re.finditer(r'"tick" /> / ', page_content['body'])]
-        table = page_content['body'][next_releases_index[-2]:next_releases_index[-1]]
-        release = table.split('ri:content-title="AWP ')[1].split('"')[0]
-        return release
-    else:
-        print(f"Error: {response.status_code} - Unable to fetch page content") 
+#     # If the request was successful, release and sprint are recovered
+#     if response.status_code == 200:
+#         page_content = response.json()
+#         next_releases_index = [next_release.start() for next_release in re.finditer(r'"tick" /> / ', page_content['body'])]
+#         table = page_content['body'][next_releases_index[-2]:next_releases_index[-1]]
+#         release = table.split('ri:content-title="AWP ')[1].split('"')[0]
+#         return release
+#     else:
+#         print(f"Error: {response.status_code} - Unable to fetch page content") 
 
 def test_suites(test_suite, release) -> None:
     pip_supported_teams = json.loads(open(FILE_TO_BE_READ, 'r').read())
