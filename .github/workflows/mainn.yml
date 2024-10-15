@@ -35,7 +35,17 @@ jobs:
         run: |
           echo "### Test Results for run id ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
           echo '${{ steps.report.outputs.results }}' | jq
-          echo '${{ steps.report.outputs.results }}' | jq -r '.[] | "| \(.testKey) | \(.status) |" | if . | test("PASS") then gsub("PASS", "✅ PASS") else gsub("FAIL"; "❌ FAIL") end' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.report.outputs.results }}' | jq -r '
+            .[] |
+            "| \(.testKey) | \(.status) |" | 
+            if . | test("PASS") then 
+              gsub("PASS", "✅ PASS") 
+            elif . | test("FAIL") then  
+              gsub("FAIL"; "❌ FAIL")
+            else
+              .
+            end
+          ' >> $GITHUB_STEP_SUMMARY
           echo "### Test Results" >> $GITHUB_STEP_SUMMARY
       
       - name: Upload Report as artifact
