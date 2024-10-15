@@ -34,9 +34,11 @@ jobs:
         if: always()
         run: |
           echo "### Test Results for run id ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.report.outputs.results }}' | jq
-          echo '${{ steps.report.outputs.results }}' | jq -r ' .[] | "| \(.testKey) | \(.status) |"' >> $GITHUB_STEP_SUMMARY
-          echo '${{ steps.report.outputs.results }}' | jq -r ' .[] | "| \(.testKey) | \(.status) |"' | sed 's/PASS/✅ PASS' | sed 's/FAIL/❌ FAIL' >> $GITHUB_STEP_SUMMARY
+          echo "| Test Name | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          #echo '${{ steps.report.outputs.results }}' | jq
+          #echo '${{ steps.report.outputs.results }}' | jq -r ' .[] | "| \(.testKey) | \(.status) |"' >> $GITHUB_STEP_SUMMARY
+          echo '${{ steps.report.outputs.results }}' | jq -r ' .[] | "| \(.testKey) | \(.status) |"' | sed 's/PASS/✅ PASS/' | sed 's/FAIL/❌ FAIL/' >> $GITHUB_STEP_SUMMARY
           echo "### Test Results" >> $GITHUB_STEP_SUMMARY
       
       - name: Upload Report as artifact
