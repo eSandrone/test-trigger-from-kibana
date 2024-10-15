@@ -1,0 +1,32 @@
+name: Change report name
+
+on:
+  workflow_dispatch:
+
+jobs:
+  change-report-name:
+    name: Change report name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - name: Run a multi-line script
+        run: |
+          touch file.txt
+          zip -r report.zip file.txt
+          zip_path=$(realpath report.zip)
+          report_path=$(realpath file.txt)
+          echo "$zip_path"
+          echo "$report_path"
+          echo "report_path=$report_path" >> $GITHUB_OUTPUT
+      
+      - name: Upload Report as artifact
+        if: always
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: report-${{ github.run_id }}
+          path: ${{ steps.report.output.report_path }}
