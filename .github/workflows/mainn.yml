@@ -15,6 +15,7 @@ jobs:
         run: echo Hello, world!
 
       - name: Run a multi-line script
+        id: report
         run: |
           touch file.txt
           zip -r report.zip file.txt
