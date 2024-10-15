@@ -18,6 +18,8 @@ jobs:
         id: report
         run: |
           touch file.txt
+          mkdir Report
+          realpath Report
           zip -r report.zip file.txt
           zip_path=$(realpath report.zip)
           report_path=$(realpath file.txt)
