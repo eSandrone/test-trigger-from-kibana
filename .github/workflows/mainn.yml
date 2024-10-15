@@ -24,7 +24,7 @@ jobs:
           mv file.txt ./Report
           zip_path=$(realpath report.zip)
           report_path=$(realpath Report)
-          output='[{"testKey": "Joynr", "status": "PASS"},{"testKey": "update with SMS", "status": "FAIL"},{"testKey": "SMS gateway", "status": "PASS"}]'
+          output="[{\"testKey\": \"Joynr\", \"status\": \"PASS\"},{\"testKey\": \"update with SMS\", \"status\": \"FAIL\"},{\"testKey\": \"SMS gateway\", \"status\": \"PASS\"}]"
           echo "$zip_path"
           echo "$report_path"
           echo "report_path=$report_path" >> $GITHUB_OUTPUT
