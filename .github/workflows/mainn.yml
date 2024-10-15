@@ -28,5 +28,5 @@ jobs:
       - name: Upload Report as artifact
         uses: actions/upload-artifact@v3.1.2
         with:
-          name: report-${{ github.run_id }}
+          name: report-run-${{ github.run_id }}
           path: ${{ steps.report.outputs.report_path }}
