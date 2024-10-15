@@ -21,8 +21,9 @@ jobs:
           mkdir Report
           realpath Report
           zip -r report.zip file.txt
+          mv file.txt ./Report
           zip_path=$(realpath report.zip)
-          report_path=$(realpath file.txt)
+          report_path=$(realpath Report)
           echo "$zip_path"
           echo "$report_path"
           echo "report_path=$report_path" >> $GITHUB_OUTPUT
