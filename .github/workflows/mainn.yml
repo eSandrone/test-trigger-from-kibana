@@ -24,9 +24,18 @@ jobs:
           mv file.txt ./Report
           zip_path=$(realpath report.zip)
           report_path=$(realpath Report)
+          output="[{"testKey": "Joynr", "status": "PASS"},{"testKey": "update with SMS", "status": "FAIL"},{"testKey": "SMS gateway", "status": "PASS"}]"
           echo "$zip_path"
           echo "$report_path"
           echo "report_path=$report_path" >> $GITHUB_OUTPUT
+          echo "results=$output" >> $GITHUB_OUTPUT
+
+      - name: Add test results to summary
+        if: always()
+        run: |
+          echo "### Test Results for run id ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.report.outputs.results }}" | jq -r '.[] | "| \(.testKey) | \(.status) |" | if . | test("PASS") then gsub("PASS", "✅ PASS") else gsub("FAIL"; "❌ FAIL") end)' >> $GITHUB_STEP_SUMMARY
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
       
       - name: Upload Report as artifact
         uses: actions/upload-artifact@v3.1.2
