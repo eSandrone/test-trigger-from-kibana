@@ -38,13 +38,8 @@ jobs:
           echo '${{ steps.report.outputs.results }}' | jq -r '
             .[] |
             "| \(.testKey) | \(.status) |" | 
-            if . | test("PASS") then 
-              gsub("PASS", "✅ PASS") 
-            elif . | test("FAIL") then  
-              gsub("FAIL"; "❌ FAIL")
-            else
-              .
-            end
+            sub("PASS", "✅ PASS") | 
+            sub("FAIL"; "❌ FAIL")
           ' >> $GITHUB_STEP_SUMMARY
           echo "### Test Results" >> $GITHUB_STEP_SUMMARY
       
