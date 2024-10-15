@@ -35,6 +35,7 @@ jobs:
         run: |
           echo "### Test Results for run id ${{ github.run_id }}" >> $GITHUB_STEP_SUMMARY
           echo '${{ steps.report.outputs.results }}' | jq
+          echo '${{ steps.report.outputs.results }}' | jq -r ' .[] | "| \(.testKey) | \(.status) |"' >> $GITHUB_STEP_SUMMARY
           echo '${{ steps.report.outputs.results }}' | jq -r ' .[] | "| \(.testKey) | \(.status) |"' | 's/PASS/✅ PASS' | 's/FAIL/❌ FAIL' >> $GITHUB_STEP_SUMMARY
           echo "### Test Results" >> $GITHUB_STEP_SUMMARY
       
