@@ -22,7 +22,7 @@ jobs:
           echo ${{ github.event.client_payload.area }}
           
           tag_filter="'("
-          gh_pages_payload='toJson(${{ github.event.client_payload }})'
+          gh_pages_payload='${{ toJson(github.event.client_payload) }})'
           echo $gh_pages_payload
           for key in $(echo "$gh_pages_payload" | jq -r 'keys[]'); do
              echo  "json handling"
