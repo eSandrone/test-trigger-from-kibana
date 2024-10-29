@@ -30,7 +30,7 @@ jobs:
           for key in $keys; do 
             echo "json handling"
             echo $key
-            value=$(echo "$json_string" | jq -r ".${key}")
+            value=$(echo $json_string | jq -r ".${key}")
             echo $value
             tag_filter+="@$value and " 
           done
