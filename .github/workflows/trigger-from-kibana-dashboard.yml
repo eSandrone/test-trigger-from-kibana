@@ -21,7 +21,7 @@ jobs:
           echo ${{ github.event.client_payload.test_type }}
           echo ${{ github.event.client_payload.area }}
           
-          tag_filter="'("
+          tag_filter="("
           gh_pages_payload='${{ toJson(github.event.client_payload) }}'
           echo $gh_pages_payload
           json_string=$( echo "$gh_pages_payload" | jq -r tostring)
