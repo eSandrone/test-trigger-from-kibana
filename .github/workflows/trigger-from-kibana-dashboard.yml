@@ -32,9 +32,9 @@ jobs:
             echo $key
             value=$(echo "$json_string" | jq -r ".${key}")
             echo $value
-            tag_filter+="@$value and "; 
+            tag_filter+="@$value and " 
           done
-          EXTRA_DATA="-Dcucumber.filter.tags=$tag_filter
+          EXTRA_DATA="-Dcucumber.filter.tags=$tag_filter"
           echo $EXTRA_DATA
           
 
