@@ -26,11 +26,8 @@ jobs:
           echo $gh_pages_payload
           json_string=$( echo "$gh_pages_payload" | jq -r tostring)
           echo $json_string
-          for key in $(echo "$json_string" | jq -r 'keys[]'); do
-             echo  "json handling"
-             value=$(echo "$json_string" | jq -r ".${key}")
-             tag_filter+="@$value and "
-          done
+          keys=$(echo $json_string | jq -r 'keys[]')
+          for key in $keys; do echo "json handling"; echo $key; value=$(echo "$json_string" | jq -r ".${key_json}"); echo $value; tag_filter+="@$value and "; done
           EXTRA_DATA="-Dcucumber.filter.tags=$tag_filter
           echo $EXTRA_DATA
           
