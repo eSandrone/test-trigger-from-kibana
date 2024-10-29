@@ -24,7 +24,7 @@ jobs:
           tag_filter="'("
           gh_pages_payload='${{ toJson(github.event.client_payload) }}'
           echo $gh_pages_payload
-          json_string='$gh_pages_payload'
+          json_string=$( echo "$gh_pages_payload" | jq -r tostring)
           for key in $(echo "$json_string" | jq -r 'keys[]'); do
              echo  "json handling"
              value=$(echo "$json_string" | jq -r ".${key}")
