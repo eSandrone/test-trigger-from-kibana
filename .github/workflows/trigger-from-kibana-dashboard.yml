@@ -24,9 +24,10 @@ jobs:
           tag_filter="'("
           gh_pages_payload='${{ toJson(github.event.client_payload) }}'
           echo $gh_pages_payload
-          for key in $(echo "$gh_pages_payload" | jq -r 'keys[]'); do
+          json_string='$gh_pages_payload'
+          for key in $(echo "$json_string" | jq -r 'keys[]'); do
              echo  "json handling"
-             value=$(echo "$gh_pages_payload" | jq -r ".${key}")
+             value=$(echo "$json_string" | jq -r ".${key}")
              tag_filter+="@$value and "
           done
           EXTRA_DATA="-Dcucumber.filter.tags=$tag_filter
