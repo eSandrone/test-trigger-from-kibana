@@ -22,13 +22,11 @@ jobs:
           echo ${{ github.event.client_payload.area }}
           
           tag_filter="'("
-          gh_pages_payload='${{ toJson(github.event.client_payload) }})'
+          gh_pages_payload='${{ toJson(github.event.client_payload) }}'
           echo $gh_pages_payload
           for key in $(echo "$gh_pages_payload" | jq -r 'keys[]'); do
              echo  "json handling"
-             key_json=".$key"
-             echo "$key_json"
-             value=$(echo "$gh_pages_payload" | jq -r "$key_json")
+             value=$(echo "$gh_pages_payload" | jq -r ".${key}")
              tag_filter+="@$value and "
           done
           EXTRA_DATA="-Dcucumber.filter.tags=$tag_filter
